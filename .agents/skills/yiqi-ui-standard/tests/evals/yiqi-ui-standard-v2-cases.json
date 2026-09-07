@@ -1,0 +1,137 @@
+[
+  {
+    "id": "planning-greenfield",
+    "prompt": "/yiqi-ui-standard 规划一个 AI 商业平台，目前还没开始写代码",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "A"
+    },
+    "expected": [
+      "先询问品牌模式",
+      "再询问项目阶段",
+      "规划阶段不询问技术栈",
+      "输出完整 UI 需求规范",
+      "展示 2–3 个布局方向"
+    ]
+  },
+  {
+    "id": "marketing-implementation",
+    "prompt": "/yiqi-ui-standard 生成一个 OneSeven 产品官网",
+    "answers": {
+      "projectStage": "B",
+      "cardMaterial": "A"
+    },
+    "expected": [
+      "确认代码实现阶段",
+      "自动路由到允许 Hero",
+      "询问卡片材质",
+      "限制 H1 为 36–42px",
+      "要求真实产品或工作状态视觉",
+      "执行静态和 Playwright 验收"
+    ]
+  },
+  {
+    "id": "service-without-media",
+    "prompt": "/yiqi-ui-standard 生成一个暂时没有图片素材的企业咨询服务页",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "B",
+      "cardMaterial": "A"
+    },
+    "expected": [
+      "不生成抽象占位视觉",
+      "使用内容主导结构",
+      "输出真实素材需求",
+      "Hero 或 No Hero 按页面任务判断"
+    ]
+  },
+  {
+    "id": "mobile-consumer-product",
+    "prompt": "/yiqi-ui-standard 生成一个移动端个人财务工具的产品页面",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "B",
+      "cardMaterial": "A"
+    },
+    "expected": [
+      "路由到 C 端工具并识别账户风险",
+      "移动端 H1 不超过 36px",
+      "卡片保持连续曲率但允许适度降低绝对半径",
+      "在 390 × 844 视口完成验收"
+    ]
+  },
+  {
+    "id": "saas-operations",
+    "prompt": "/yiqi-ui-standard 创建一个 CRM 运营工作台",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "B",
+      "cardMaterial": "A"
+    },
+    "expected": [
+      "路由到运营管理型 SaaS",
+      "使用 No Hero",
+      "页面标题不超过 24px",
+      "第一视口显示筛选、数据和主要操作"
+    ]
+  },
+  {
+    "id": "saas-ai-workspace",
+    "prompt": "/yiqi-ui-standard 创建一个 AI 绘画工作台",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "B",
+      "cardMaterial": "B"
+    },
+    "expected": [
+      "路由到 AI 创作型",
+      "使用 No Hero",
+      "包含主画布和参数检查器",
+      "包含运行、等待、完成和错误状态"
+    ]
+  },
+  {
+    "id": "saas-analytics",
+    "prompt": "/yiqi-ui-standard 创建一个经营数据分析平台",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "B",
+      "cardMaterial": "A"
+    },
+    "expected": [
+      "路由到数据分析型",
+      "使用 No Hero",
+      "包含时间范围、筛选、指标、趋势和明细"
+    ]
+  },
+  {
+    "id": "composite-product",
+    "prompt": "/yiqi-ui-standard 规划一个包含官网、AI 创作、项目管理、数据分析和订阅结算的平台",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "A"
+    },
+    "expected": [
+      "选择一个主类型和多个次类型",
+      "按路由覆盖页面类型",
+      "官网允许 Hero",
+      "创作、管理和数据路由使用 No Hero",
+      "订阅结算应用交易风险规则"
+    ]
+  },
+  {
+    "id": "review-baseline",
+    "prompt": "/yiqi-ui-standard 审查根目录 index.html",
+    "answers": {
+      "brandMode": "A",
+      "projectStage": "C"
+    },
+    "expected": [
+      "指出标题过大",
+      "指出默认左右分栏 Hero",
+      "指出大型装饰圆形",
+      "指出真实视觉证据不足",
+      "指出移动端首屏节奏过长"
+    ]
+  }
+]

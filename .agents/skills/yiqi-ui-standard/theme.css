@@ -1,0 +1,294 @@
+@font-face {
+  font-family: "Alibaba PuHuiTi";
+  src: url("./assets/fonts/AlibabaPuHuiTi-3-35-Thin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Alibaba PuHuiTi";
+  src: url("./assets/fonts/AlibabaPuHuiTi-3-55-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Alibaba PuHuiTi";
+  src: url("./assets/fonts/AlibabaPuHuiTi-3-65-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Alibaba PuHuiTi";
+  src: url("./assets/fonts/AlibabaPuHuiTi-3-75-SemiBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Brand and semantic colors */
+  --color-primary-100: #f3ecf7;
+  --color-primary-500: #9a6aba;
+  --color-primary-700: #68447f;
+  --color-success-100: #e7f2ec;
+  --color-success-500: #327a5b;
+  --color-success-700: #21513d;
+  --color-danger-100: #f8e8eb;
+  --color-danger-500: #b94a5a;
+  --color-danger-700: #7d303b;
+
+  /* Dark-first neutral foundation */
+  --color-dark-page: #09090b;
+  --color-dark-surface: #141418;
+  --color-dark-surface-elevated: #1b1b20;
+  --color-dark-subtle: #222228;
+  --color-dark-border: #2e2e35;
+  --color-dark-border-strong: #44444d;
+  --color-dark-text-primary: #f5f5f7;
+  --color-dark-text-secondary: #b8b8c0;
+  --color-dark-text-tertiary: #81818a;
+
+  /* Natural neutrals */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-700: #525252;
+  --color-neutral-900: #171717;
+
+  /* Semantic aliases */
+  --color-primary: var(--color-primary-500);
+  --color-success: #72b596;
+  --color-danger: #df7b89;
+  --color-text-primary: var(--color-dark-text-primary);
+  --color-text-secondary: var(--color-dark-text-secondary);
+  --color-text-tertiary: var(--color-dark-text-tertiary);
+  --color-text-inverse: #ffffff;
+  --color-text-on-accent: var(--color-dark-page);
+  --color-text-brand: var(--color-primary-500);
+  --color-text-success: #72b596;
+  --color-text-danger: #df7b89;
+  --color-bg-page: var(--color-dark-page);
+  --color-bg-surface: var(--color-dark-surface);
+  --color-bg-elevated: var(--color-dark-surface-elevated);
+  --color-bg-subtle: var(--color-dark-subtle);
+  --color-bg-selected: rgba(154, 106, 186, 0.16);
+  --color-bg-success: rgba(50, 122, 91, 0.18);
+  --color-bg-danger: rgba(185, 74, 90, 0.18);
+  --color-border-default: var(--color-dark-border);
+  --color-border-strong: var(--color-dark-border-strong);
+  --color-border-focus: var(--color-primary-500);
+  --color-border-success: #327a5b;
+  --color-border-danger: #b94a5a;
+  --color-focus-ring: rgba(154, 106, 186, 0.28);
+
+  /* Status aliases. Warning intentionally adds no new chromatic color. */
+  --color-info-bg: rgba(154, 106, 186, 0.16);
+  --color-info-text: #d7bce8;
+  --color-warning-bg: var(--color-dark-subtle);
+  --color-warning-text: var(--color-dark-text-primary);
+  --color-warning-icon: var(--color-primary-500);
+  --color-success-bg: var(--color-bg-success);
+  --color-success-text: var(--color-text-success);
+  --color-danger-bg: var(--color-bg-danger);
+  --color-danger-text: var(--color-text-danger);
+
+  /* Typography */
+  --font-sans: "Alibaba PuHuiTi", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", Consolas, Menlo, Monaco, "Courier New", monospace;
+  --font-weight-brand: 200;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --text-4xl: 36px;
+  --text-5xl: 42px;
+  --text-marketing-h1-min: 36px;
+  --text-marketing-h1-max: 42px;
+  --text-marketing-h1-mobile-min: 30px;
+  --text-marketing-h1-mobile-max: 36px;
+  --text-page-title-desktop-min: 28px;
+  --text-page-title-desktop-max: 32px;
+  --text-page-title-mobile-min: 24px;
+  --text-page-title-mobile-max: 28px;
+  --text-section-title-desktop-min: 22px;
+  --text-section-title-desktop-max: 24px;
+  --text-section-title-mobile-min: 20px;
+  --text-section-title-mobile-max: 22px;
+  --text-card-title-desktop-min: 16px;
+  --text-card-title-desktop-max: 20px;
+  --text-card-title-mobile-min: 16px;
+  --text-card-title-mobile-max: 18px;
+  --text-saas-page-title-min: 20px;
+  --text-saas-page-title-max: 24px;
+  --text-saas-panel-title-min: 16px;
+  --text-saas-panel-title-max: 18px;
+  --text-saas-body-min: 13px;
+  --text-saas-body-max: 16px;
+
+  /* Spacing */
+  --spacing-0: 0;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+
+  /* Product-level density profiles */
+  --density-compact-control-height: 32px;
+  --density-compact-padding-inline: 12px;
+  --density-compact-padding-block: 8px;
+  --density-compact-component-gap: 12px;
+  --density-compact-grid-gap: 16px;
+  --density-standard-control-height: 40px;
+  --density-standard-padding-inline: 16px;
+  --density-standard-padding-block: 12px;
+  --density-standard-component-gap: 16px;
+  --density-standard-grid-gap: 24px;
+  --density-spacious-control-height: 48px;
+  --density-spacious-padding-inline: 24px;
+  --density-spacious-padding-block: 16px;
+  --density-spacious-component-gap: 24px;
+  --density-spacious-grid-gap: 32px;
+
+  /* Shape and elevation */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-card: 36px;
+  --radius-card-mobile-min: 28px;
+  --radius-card-mobile-default: 32px;
+  --radius-card-mobile-max: 36px;
+  --radius-full: 9999px;
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --card-solid-bg: var(--color-bg-surface);
+  --card-solid-border: var(--color-border-default);
+  --card-solid-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+  --card-glass-bg: rgba(255, 255, 255, 0.08);
+  --card-glass-border: rgba(255, 255, 255, 0.16);
+  --card-glass-blur: 24px;
+  --card-glass-saturation: 140%;
+  --card-background: var(--card-solid-bg);
+  --card-border: var(--card-solid-border);
+  --card-shadow: var(--card-solid-shadow);
+
+  /* Soft, calm motion */
+  --duration-fast: 200ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 600ms;
+  --duration-reduced: 120ms;
+  --ease-out-quick: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out-smooth: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-smooth: cubic-bezier(0.32, 0, 0.67, 0);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --loading-spinner-period: 900ms;
+  --loading-skeleton-period: 1600ms;
+  --loading-progress-transition: 300ms;
+
+  /* Layering */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+}
+
+:root[data-ui-card-material="solid"] {
+  --card-background: var(--card-solid-bg);
+  --card-border: var(--card-solid-border);
+  --card-shadow: var(--card-solid-shadow);
+}
+
+:root[data-ui-card-material="liquid-glass"] {
+  --card-background: var(--card-glass-bg);
+  --card-border: var(--card-glass-border);
+  --card-shadow: none;
+}
+
+[data-ui-card] {
+  background: var(--card-background);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
+  box-shadow: var(--card-shadow);
+}
+
+:root[data-ui-card-material="liquid-glass"] [data-ui-card] {
+  -webkit-backdrop-filter: blur(var(--card-glass-blur))
+    saturate(var(--card-glass-saturation));
+  backdrop-filter: blur(var(--card-glass-blur))
+    saturate(var(--card-glass-saturation));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-ui-card-material="liquid-glass"] {
+    --card-background: var(--card-solid-bg);
+    --card-border: var(--card-solid-border);
+    --card-shadow: var(--card-solid-shadow);
+  }
+
+  :root[data-ui-card-material="liquid-glass"] [data-ui-card] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-ui-card-material="liquid-glass"] {
+    --card-background: var(--card-solid-bg);
+    --card-border: var(--card-solid-border);
+    --card-shadow: var(--card-solid-shadow);
+  }
+
+  :root[data-ui-card-material="liquid-glass"] [data-ui-card] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --radius-card: var(--radius-card-mobile-default);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: var(--duration-reduced);
+    --duration-base: var(--duration-reduced);
+    --duration-slow: var(--duration-reduced);
+    --duration-slower: var(--duration-reduced);
+    --ease-out-bounce: var(--ease-out-quick);
+  }
+}
