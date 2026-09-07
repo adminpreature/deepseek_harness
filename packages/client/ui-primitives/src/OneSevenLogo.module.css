@@ -1,0 +1,15 @@
+.root {
+  display: inline-block;
+}
+
+.dark {
+  display: none;
+}
+
+:global(body[data-ds-dark-theme]) .light {
+  display: none;
+}
+
+:global(body[data-ds-dark-theme]) .dark {
+  display: inline-block;
+}

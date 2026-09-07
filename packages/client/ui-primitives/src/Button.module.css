@@ -1,19 +1,20 @@
-/* Capsule geometry from the figma Button component (1:155 instances:
- * h36, pad 14/7, gap 4, r18; the wide New Session form is r24 at h38 —
- * owners with the wide form set their own radius/width). */
+/* OneSeven Brand Button Styles
+ * 应用 12px 中等圆角和平滑过渡动画 */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   border: none;
-  border-radius: 18px;
+  border-radius: var(--dsw-radius-button, 12px);
   cursor: pointer;
   font-size: 14px;
   line-height: 22px;
+  font-weight: 500;
   color: var(--dsw-alias-label-primary);
   background: transparent;
   padding: 0 14px;
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .button:disabled {
@@ -32,16 +33,23 @@
   font-size: 12px;
   line-height: 18px;
   padding: 0 10px;
-  border-radius: 14px;
+  border-radius: var(--dsw-radius-small, 8px);
 }
 
 .primary {
   background: var(--dsw-alias-button-primary-fill);
   color: var(--dsw-alias-label-primary-foreground);
+  font-weight: 600;
 }
 
 .primary:hover:not(:disabled) {
   background: var(--dsw-alias-button-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--dsw-shadow-card-light, 0 2px 8px rgba(0, 0, 0, 0.08));
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .ghost:hover:not(:disabled) {
@@ -50,6 +58,7 @@
 
 .ghost:active:not(:disabled) {
   background: var(--dsw-alias-interactive-bg-active);
+  transform: scale(0.98);
 }
 
 /* Dialog Cancel (figma 451:18655): bordered capsule on transparent fill. */
@@ -60,6 +69,11 @@
 
 .outline:hover:not(:disabled) {
   background: var(--dsw-alias-interactive-bg-hover);
+  border-color: var(--dsw-alias-border-l3);
+}
+
+.outline:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .toolbar {

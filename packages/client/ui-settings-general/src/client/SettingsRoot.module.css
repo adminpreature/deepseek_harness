@@ -16,7 +16,7 @@
   padding: 6px 2px 6px 10px;
   box-sizing: border-box;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--dsw-radius-button, 12px);
   background: transparent;
   cursor: pointer;
   overflow: hidden;
@@ -24,10 +24,12 @@
   font-family: inherit;
   font-size: 14px;
   line-height: 22px;
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .trigger:hover {
   background: var(--dsw-alias-interactive-bg-hover);
+  transform: translateX(2px);
 }
 
 /* Rail trigger: the same 36x36 circle box as the other rail controls. */
@@ -77,10 +79,11 @@
   width: 800px;
   height: min(800px, calc(100vh - 48px));
   max-width: calc(100vw - 48px);
-  border-radius: 24px;
+  border-radius: var(--dsw-radius-card-desktop, 36px);
   overflow: hidden;
   background: var(--dsw-alias-bg-layer-2);
   box-shadow: var(--dsw-shadow-lv3);
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
   /* Elevated surface: the scrollbar thumb takes the l2 elevation tokens.
      Declared on the panel rather than the scrolling `.options` child so the
      elevation choice sits with the surface; the custom properties inherit
@@ -128,7 +131,7 @@
   padding: 9px 16px 9px 12px;
   box-sizing: border-box;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--dsw-radius-button, 12px);
   background: transparent;
   cursor: pointer;
   font-family: inherit;
@@ -137,14 +140,18 @@
   font-weight: 400;
   color: var(--dsw-alias-label-primary);
   text-align: left;
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .navCell:hover {
   background: var(--dsw-specific-sidebar-nav-item-hover);
+  transform: translateX(2px);
 }
 
 .navCell.active {
   background: var(--dsw-specific-sidebar-nav-item-active);
+  border-left: 3px solid var(--dsw-brand-primary, #9A6ABA);
+  padding-left: 9px;
 }
 
 .navIcon {
@@ -201,10 +208,12 @@
   background: transparent;
   cursor: pointer;
   color: var(--dsw-alias-label-primary);
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .close:hover {
   background: var(--dsw-alias-interactive-bg-hover);
+  transform: scale(1.1);
 }
 
 /* Options area (figma Options 501:29983): pad (24,0,24,24), scrolls. */

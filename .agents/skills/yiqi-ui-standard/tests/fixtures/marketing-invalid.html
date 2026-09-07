@@ -1,0 +1,58 @@
+<!doctype html>
+<html
+  lang="en"
+  data-ui-page-type="marketing"
+  data-ui-hero="approved"
+>
+  <head>
+    <meta charset="utf-8">
+    <title>Invalid marketing page</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --radius-card: 12px;
+        --corner-shape: rounded;
+      }
+
+      [data-ui-card] {
+        border-radius: var(--radius-card);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero h1 {
+        font-size: 84px;
+      }
+
+      .hero-aside::before {
+        content: "";
+        display: block;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+      }
+
+      button {
+        background: #9a6aba;
+        transition: transform 180ms ease;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <h1>Build a clearer product</h1>
+        <button type="button">Start now</button>
+      </div>
+      <aside class="hero-aside"></aside>
+    </header>
+    <main>
+      <article data-ui-card>
+        <div data-ui-card>Nested card</div>
+      </article>
+    </main>
+  </body>
+</html>

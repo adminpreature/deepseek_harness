@@ -137,10 +137,12 @@
   background: transparent;
   cursor: pointer;
   color: var(--dsw-alias-label-secondary);
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .iconButton:hover {
   background: var(--dsw-alias-interactive-bg-hover);
+  transform: scale(1.05);
 }
 
 .collapsed .iconButton {
@@ -182,7 +184,7 @@
   margin: 0 2px 8px;
   box-sizing: border-box;
   border: 1px solid var(--dsw-alias-border-l2);
-  border-radius: 12px;
+  border-radius: var(--dsw-radius-button, 12px);
   background: var(--dsw-alias-button-elevated-fill);
   color: var(--dsw-alias-label-primary);
   font-size: 14px;
@@ -190,10 +192,13 @@
   line-height: 22px;
   cursor: pointer;
   overflow: hidden;
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .newSession:hover {
   background: var(--dsw-alias-button-floating-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--dsw-shadow-button-hover, 0 2px 8px rgba(0, 0, 0, 0.1));
 }
 
 .collapsed .newSession {

@@ -17,15 +17,16 @@
   max-width: min(525px, 82%);
 }
 .bubble {
-  /* 525px cap inside the 736 column; percentage keeps narrow windows sane. */
   max-width: 100%;
   background: var(--dsw-specific-bubble);
-  border-radius: 22px;
+  border-radius: var(--dsw-radius-card-desktop, 36px);
   /* 44px single-line bubble: 24 line + 10 vertical padding each side. */
-  padding: 10px 16px;
+  padding: 12px 18px;
   font-size: 16px;
   line-height: 24px;
   color: var(--dsw-alias-label-primary);
+  box-shadow: var(--dsw-shadow-card-light, 0 2px 8px rgba(0, 0, 0, 0.08));
+  transition: all var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .contextRow {
