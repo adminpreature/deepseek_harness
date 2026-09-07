@@ -3,6 +3,7 @@
  * loader holding, module-table seeding, AppRoot gate, plugin assembly — lives
  * in @deepseek-ai/dsh-client-web; this file only finds the mount point.
  */
+import './styles/oneseven-theme.css'
 import { AppWebEntry } from '@deepseek-ai/dsh-client-web'
 
 const el = document.getElementById('root')

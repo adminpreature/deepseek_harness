@@ -1,0 +1,59 @@
+/**
+ * OneSeven Brand Theme
+ * Applied to DeepSeek Harness Web UI
+ *
+ * 只注入字体和 CSS 变量，不覆盖任何原有的 button/card/input 元素样式。
+ * 颜色主题已通过 design-platform.css 的 token 层控制。
+ */
+
+/* Font Faces */
+@font-face {
+  font-family: 'PuHuiTi';
+  src: url('/assets/fonts/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PuHuiTi';
+  src: url('/assets/fonts/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PuHuiTi';
+  src: url('/assets/fonts/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* CSS Variables Only - no element overrides */
+:root {
+  /* OneSeven 品牌紫 */
+  --dsw-brand-purple: rgb(154, 106, 186);
+  --dsw-brand-purple-hover: rgb(135, 89, 168);
+  --dsw-brand-purple-bg: rgba(154, 106, 186, 0.08);
+
+  /* 圆角系统 */
+  --dsw-radius-card-desktop: 36px;
+  --dsw-radius-button: 12px;
+  --dsw-radius-small: 8px;
+
+  /* 阴影系统（实体材质） */
+  --dsw-shadow-card-light: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --dsw-shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --dsw-shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.08);
+
+  /* 字体 */
+  --dsw-font-oneseven: 'PuHuiTi', 'Alibaba PuHuiTi', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 仅应用品牌字体到 body，不覆盖颜色 */
+body {
+  font-family: var(--dsw-font-oneseven);
+}

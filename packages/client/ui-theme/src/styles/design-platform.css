@@ -75,6 +75,13 @@ body {
   --dsw-static-red-50: rgb(254, 242, 242);
   --dsw-static-red-600: rgb(236, 19, 19);
   --dsw-static-red-900: rgb(87, 12, 12);
+  /* OneSeven Brand Purple - 壹柒研究所品牌紫 */
+  --dsw-static-oneseven-purple-primary: rgb(154, 106, 186);
+  --dsw-static-oneseven-purple-light: rgb(184, 146, 206);
+  --dsw-static-oneseven-purple-lighter: rgb(214, 186, 226);
+  --dsw-static-oneseven-purple-dark: rgb(124, 86, 156);
+  --dsw-static-oneseven-purple-bg: rgba(154, 106, 186, 0.08);
+  --dsw-static-oneseven-purple-border: rgba(154, 106, 186, 0.2);
 }
 
 body[data-ds-dark-theme] {
@@ -151,6 +158,13 @@ body[data-ds-dark-theme] {
   --dsw-static-red-50: rgb(254, 242, 242);
   --dsw-static-red-600: rgb(236, 19, 19);
   --dsw-static-red-900: rgb(87, 12, 12);
+  /* OneSeven Brand Purple - 壹柒研究所品牌紫 */
+  --dsw-static-oneseven-purple-primary: rgb(154, 106, 186);
+  --dsw-static-oneseven-purple-light: rgb(184, 146, 206);
+  --dsw-static-oneseven-purple-lighter: rgb(214, 186, 226);
+  --dsw-static-oneseven-purple-dark: rgb(124, 86, 156);
+  --dsw-static-oneseven-purple-bg: rgba(154, 106, 186, 0.08);
+  --dsw-static-oneseven-purple-border: rgba(154, 106, 186, 0.2);
 }
 
 body {
@@ -232,6 +246,12 @@ body {
   --dsw-alias-state-warn-tertiary: var(--dsw-static-amber-100);
   --dsw-alias-toast-bg: var(--dsw-static-neutral-bluish-800);
   --dsw-alias-tooltip-bg: var(--dsw-static-neutral-bluish-850);
+  /* OneSeven Brand Accent - 品牌强调色 */
+  --dsw-alias-brand-accent-primary: var(--dsw-static-oneseven-purple-primary);
+  --dsw-alias-brand-accent-hover: var(--dsw-static-oneseven-purple-light);
+  --dsw-alias-brand-accent-active: var(--dsw-static-oneseven-purple-dark);
+  --dsw-alias-brand-accent-bg: var(--dsw-static-oneseven-purple-bg);
+  --dsw-alias-brand-accent-border: var(--dsw-static-oneseven-purple-border);
   --dsw-specific-bubble-highlight: var(--dsw-static-deepseek-200);
   --dsw-specific-bubble: var(--dsw-static-deepseek-50);
   --dsw-specific-input-major: var(--dsw-static-neutral-bluish-00);
