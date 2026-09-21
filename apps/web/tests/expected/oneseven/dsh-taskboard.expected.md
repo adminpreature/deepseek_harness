@@ -1,0 +1,23 @@
+- heading "Agent 任务看板" [level=2]
+- text: 0 任务 · rev 0
+- button "+ 新建任务 ▼"
+- textbox "搜索标题 / ID…"
+- combobox:
+  - option "全部项目" [selected]
+- combobox "列内排序":
+  - option "默认排序" [selected]
+  - option "最近更新"
+  - option "按紧急度"
+  - option "创建时间"
+  - option "按标题"
+- button "紧急"
+- button "一般"
+- button "不急"
+- button "其它任务"
+- button "🛠 设置"
+- button "⚙ 诊断"
+- button "⬆ 导入"
+- button "⬇ 导出 ▼"
+- link "V0.6.4":
+  - /url: https://github.com/cloader/dsh-taskboard
+- text: 待规划 0 无任务 待办 0 无任务 进行中 0 无任务 待验收 0 无任务 已完成 0 无任务

@@ -49,6 +49,8 @@
     "apps/web/tests/plugin-install-approve.e2e.ts",
     "apps/web/tests/client-plugin-live.e2e.ts",
     "apps/web/tests/settings-chrome.e2e.ts",
+    "apps/web/tests/oneseven-brand.e2e.ts",
+    "apps/web/tests/oneseven-external-plugins.e2e.ts",
     "apps/web/tests/models-settings.e2e.ts",
     "apps/web/tests/deepseek-messages-settings.e2e.ts",
     "apps/web/tests/deepseek-messages-chat.e2e.ts",

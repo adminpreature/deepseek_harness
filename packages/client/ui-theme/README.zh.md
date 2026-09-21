@@ -41,6 +41,8 @@ kind: "package-reference"
 
 -----
 
+部署配置 `defaultPreference` 接受 `light`、`dark` 或 `system`（上游默认值），仅提供 Schema 默认值，已保存偏好优先。浏览器在 Host 设置请求完成前采用经过验证的服务端首屏主题。
+
 <a id="understand-the-implementation"></a>
 ## 理解实现
 
@@ -63,7 +65,7 @@ kind: "package-reference"
 
 ### 偏好持久化
 
-在 loopback 浏览器上，服务先以 schema 默认值立即提供自身，随后加载 `ui-theme` 命名空间，并把每次通过的主题或字号变更经 Host settings API 写入。收到推送的设置变更时或重连后都会重新拉取该命名空间。非 loopback 页面不会创建该 Host-backed scope。该持久化边界由 [Host 支撑的偏好笔记](../../../.agents/notes/implemented/bug-fix/2026-08-06-host-backed-web-preferences.zh.md) 拥有。
+服务先以服务端首屏主题和字号立即提供自身，缺少首屏值时采用 schema 默认值，随后在 loopback 浏览器上加载 `ui-theme` 命名空间，并把每次通过的主题或字号变更经 Host settings API 写入。收到推送的设置变更时或重连后都会重新拉取该命名空间。非 loopback 页面不会创建该 Host-backed scope。该持久化边界由 [Host 支撑的偏好笔记](../../../.agents/notes/implemented/bug-fix/2026-08-06-host-backed-web-preferences.zh.md) 拥有。
 
 </details>
 

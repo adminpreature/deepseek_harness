@@ -200,6 +200,8 @@
 
     - id: ui-theme
       name: '@deepseek-ai/dsh-client-ui-theme'
+      config:
+        defaultPreference: dark
 
     - id: locale
       name: '@deepseek-ai/dsh-client-locale'
@@ -278,6 +280,10 @@
     # Official occupants for the generic sidebar and conversation brand slots.
     - id: ui-brand-official
       name: '@deepseek-ai/dsh-client-ui-brand-official'
+      disabled: true
+
+    - id: ui-brand-oneseven
+      name: '@deepseek-ai/dsh-client-ui-brand-oneseven'
 
     - id: ui-attachment
       name: '@deepseek-ai/dsh-client-ui-attachment'

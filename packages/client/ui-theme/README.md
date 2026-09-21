@@ -41,6 +41,8 @@ When the host composition includes an HTTP server, the host half embeds the regi
 
 -----
 
+Deployment config `defaultPreference` accepts `light`, `dark` or `system` (upstream default). It supplies schema defaults only; saved preferences win. The browser adopts the validated server bootstrap preference while its Host settings request is pending.
+
 <a id="understand-the-implementation"></a>
 ## Understand the implementation
 
@@ -63,7 +65,7 @@ The service owns theme and font-size state and publishes snapshots. The ui-layou
 
 ### Preference persistence
 
-The service provides itself immediately with the schema defaults on a loopback browser, then loads the `ui-theme` namespace and writes each accepted theme or font-size change through the Host settings API. Pushed settings changes and reconnects refetch the namespace. Non-loopback pages do not create that Host-backed scope. The persistence boundary is owned by the [Host-backed preferences note](../../../.agents/notes/implemented/bug-fix/2026-08-06-host-backed-web-preferences.md).
+The service provides itself immediately with the server bootstrap preference and font size when present, otherwise schema defaults, then loads the `ui-theme` namespace on a loopback browser and writes each accepted theme or font-size change through the Host settings API. Pushed settings changes and reconnects refetch the namespace. Non-loopback pages do not create that Host-backed scope. The persistence boundary is owned by the [Host-backed preferences note](../../../.agents/notes/implemented/bug-fix/2026-08-06-host-backed-web-preferences.md).
 
 </details>
 

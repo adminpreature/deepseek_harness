@@ -290,3 +290,18 @@ describe('ThemeRuntime', () => {
     })
   })
 })
+
+it('adopts the server bootstrap preference until durable settings arrive', () => {
+  const previous = document.documentElement.dataset.dsThemeSource
+  document.documentElement.dataset.dsThemeSource = 'dark'
+  try {
+    const { theme, host } = make()
+    expect(theme.getTheme().preference).toBe('dark')
+    host.publish({ status: 'ready', value: { preference: 'light', fontSize: 14 }, revision: 1, writable: true })
+    expect(theme.getTheme().preference).toBe('light')
+    expect(host.set).not.toHaveBeenCalled()
+  } finally {
+    if (previous === undefined) delete document.documentElement.dataset.dsThemeSource
+    else document.documentElement.dataset.dsThemeSource = previous
+  }
+})

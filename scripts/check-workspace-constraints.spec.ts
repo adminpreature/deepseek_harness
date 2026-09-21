@@ -206,3 +206,14 @@ it('requires Office skill bodies and helpers in the published payload', () => {
     ...manifest, files: ['lib/index.js', 'lib/types/**/*.d.ts'],
   } })).toEqual([expect.stringContaining('package.json files must be')])
 })
+
+it('keeps the downstream brand private without relaxing upstream publication requirements', () => {
+  const dir = 'packages/client/ui-brand-oneseven'
+  const manifest = JSON.parse(readFileSync(new URL(`../${dir}/package.json`, import.meta.url), 'utf8')) as WorkspaceManifest['manifest']
+  expect(checkWorkspaceManifest({ dir, manifest })).toEqual([])
+  expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, private: false } }))
+    .toContain(`${dir}/package.json: ${manifest.name}: package.json must set "private": true`)
+  const official = JSON.parse(readFileSync(new URL('../packages/client/ui-brand-official/package.json', import.meta.url), 'utf8')) as WorkspaceManifest['manifest']
+  expect(checkWorkspaceManifest({ dir: 'packages/client/ui-brand-official', manifest: { ...official, private: true } }))
+    .toContain(`packages/client/ui-brand-official/package.json: ${official.name}: release member must not set "private": true`)
+})

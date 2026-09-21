@@ -1,0 +1,38 @@
+- dialog "设置":
+  - navigation:
+    - text: 设置
+    - button "通用设置":
+      - img
+      - text: 通用设置
+    - button "模型":
+      - img
+      - text: 模型
+    - button "内置插件":
+      - img
+      - text: 内置插件
+    - button "Agent 预设":
+      - img
+      - text: Agent 预设
+    - button "已归档会话":
+      - img
+      - text: 已归档会话
+    - button "提示词管理":
+      - img
+      - text: 提示词管理
+  - button "打开配置文件"
+  - button "关闭":
+    - img
+    - text: 关闭
+  - text: 提示词库 保存在本机。输入 /prompt 或 /提示词 打开列表，也可以直接用 /关键词 搜索。
+  - searchbox "搜索提示词": OneSeven isolated prompt
+  - button "新建"
+  - button "导入"
+  - button "导出"
+  - text: 共 5 条提示词，匹配 1 条
+  - article:
+    - text: OneSeven isolated prompt
+    - button "收藏": ☆
+    - button "复制"
+    - button "编辑"
+    - button "删除"
+    - text: "Reply briefly. Preserve {{literal}}."

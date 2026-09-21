@@ -1,0 +1,7 @@
+{
+  "name": "oneseven-pinned-external-plugins",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node link-local.mjs && node build.mjs" },
+  "dependencies": { "yaml": "2.9.0", "zod": "4.4.3" }
+}

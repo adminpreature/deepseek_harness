@@ -1,0 +1,80 @@
+{
+  "name": "dsh-taskboard",
+  "description": "Agent-first task board for the DSH web GUI: host-authoritative task ledger with taskboard_* agent tools, project (= workspace) claim boundaries, per-task model execution in fresh sessions, optional per-task git-worktree isolation (dedicated task branches, commit evidence, one-click merge), host-side cron scheduling, and a live SSE kanban view. Mounts via the official dsh plugin system — no DSH source changes.",
+  "version": "0.6.4",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.1.0-rc.8": "unknown",
+        "0.1.1-rc.1": "unknown",
+        "0.1.1-rc.2": "compatible",
+        "0.1.2-alpha.2": "compatible",
+        "0.1.2-alpha.3": "compatible",
+        "0.1.2-alpha.4": "compatible"
+      }
+    }
+  },
+  "files": [
+    "lib/**/*.js",
+    "src",
+    "cordis.patch.yml",
+    "LICENSE"
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "author": "cloader",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloader/dsh-taskboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cloader/dsh-taskboard/issues"
+  },
+  "homepage": "https://github.com/cloader/dsh-taskboard#readme",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "dsh-plugin",
+    "taskboard",
+    "kanban",
+    "agent"
+  ],
+  "scripts": {
+    "build": "node ../build.mjs dsh-taskboard"
+  },
+  "private": true,
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/dsh-agent": "0.1.6-alpha.2",
+    "@deepseek-ai/dsh-client-ui-layout": "0.1.6-alpha.2",
+    "@deepseek-ai/dsh-client-ui-renderer": "0.1.6-alpha.2",
+    "@deepseek-ai/dsh-host-webserver": "0.1.6-alpha.2",
+    "@deepseek-ai/dsh-system-prompt": "0.1.6-alpha.2",
+    "@deepseek-ai/dsh-tools": "0.1.6-alpha.2",
+    "@deepseek-ai/dsh-workspace": "0.1.6-alpha.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.1.6-alpha.2"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7"
+  }
+}

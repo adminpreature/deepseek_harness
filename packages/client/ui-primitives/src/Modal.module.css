@@ -29,7 +29,7 @@
   padding: 0 0 24px;
   overflow: hidden;
   border: 0;
-  border-radius: 24px;
+  border-radius: var(--dsh-card-radius, 24px);
   background: var(--dsw-alias-bg-layer-2);
   box-shadow: var(--dsw-elevation-prominent);
 }

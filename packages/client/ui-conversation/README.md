@@ -118,6 +118,8 @@ try {
 
 The selector must be a pure function of the owner currency. Its non-null return is delivered to the component as `matched`; `PropsRuntime<'conversation.composer'>` supplies the standard Session and global props. Chain order remains ascending `priority`, then registration order, and the first non-null selector wins. The shell keeps the default composer mounted beneath a takeover. Request state, listeners, response encoding, and any request-specific child slots belong to the business package; they are not carried by `SessionSnapshot` or declared by this core package.
 
+The blank task entry uses a compact “Start a task” prompt. Brand geometry is configurable through `--dsh-empty-title-size`, `--dsh-card-radius`, `--dsh-card-radius-mobile` and `--dsh-workspace-outline-display`, without changing workspace selection or composer actions.
+
 <a id="model-experience"></a>
 ## Model Experience
 

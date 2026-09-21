@@ -2,6 +2,7 @@
 // credential is absent, both ordered steps share the shipped modal chrome,
 // and the inline key write lands in an isolated harness home without a reload
 // or model call.
+import { readClientBuildRecord } from '../../../scripts/client-build-environment.ts'
 import { randomBytes } from 'node:crypto'
 import { assertModelInputLayout } from './model-input-layout.ts'
 import { readFile } from 'node:fs/promises'
@@ -16,7 +17,7 @@ import {
   WELCOME_NOTICE_ACK_FIELD, WELCOME_NOTICE_COPY, WELCOME_NOTICE_SETTINGS_NAMESPACE,
   WELCOME_NOTICE_VERSION,
 } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, connectFreshWorkspaceZh, saveFailureShot } from './support.ts'
+import { REPO_ROOT, ZH_BROWSER_LOCALE, connectFreshWorkspaceZh, saveFailureShot } from './support.ts'
 
 const SNAPSHOT_DIR = fileURLToPath(new URL('./expected/onboarding-deepseek-config', import.meta.url))
 const WELCOME_EXPECTED = join(SNAPSHOT_DIR, 'welcome.expected.md')
@@ -24,6 +25,7 @@ const MISSING_EXPECTED = join(SNAPSHOT_DIR, 'missing.expected.md')
 const MODELS_EXPECTED = join(SNAPSHOT_DIR, 'models.expected.md')
 const DEFAULT_MODELS_EXPECTED = join(SNAPSHOT_DIR, 'default-models.expected.md')
 const MODE = webSnapshotMode()
+const ONESEVEN = readClientBuildRecord(REPO_ROOT).environment.DSH_CLIENT_BUILD_PROFILE === 'oneseven'
 
 describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup', () => {
   let scaffold: WebScaffold
@@ -51,29 +53,32 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
   it('stores a key write-only and observes configured state without restarting', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-onboarding-deepseek-config'))
     const welcome = page.getByRole('dialog', { name: WELCOME_NOTICE_COPY.zh.title })
-    await welcome.waitFor({ timeout: 15_000 })
-    expect(await page.locator('#root').evaluate(root => (root as HTMLElement).inert)).toBe(true)
-    for (const paragraph of WELCOME_NOTICE_COPY.zh.body.split('\n\n')) {
-      expect(await welcome.getByText(paragraph, { exact: true }).count()).toBe(1)
+    if (!ONESEVEN) {
+      await welcome.waitFor({ timeout: 15_000 })
+      expect(await page.locator('#root').evaluate(root => (root as HTMLElement).inert)).toBe(true)
+      for (const paragraph of WELCOME_NOTICE_COPY.zh.body.split('\n\n')) {
+        expect(await welcome.getByText(paragraph, { exact: true }).count()).toBe(1)
+      }
+      expect(await welcome.getByRole('button').allTextContents()).toEqual([
+        WELCOME_NOTICE_COPY.zh.continueLabel,
+      ])
+      const welcomeAria = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
+      await compareOrRefreshGolden(WELCOME_EXPECTED, welcomeAria, MODE)
+
+      // Observation is not acknowledgement: the exact version is persisted
+      // only by the explicit action, so a reload still presents this dialog.
+      const firstReloadWarnings = tripwire.warnings.length
+      await page.reload({ waitUntil: 'load' })
+      acknowledgeReloadConnectionLoss(tripwire, firstReloadWarnings)
+      await welcome.waitFor({ timeout: 15_000 })
+
+      await welcome.getByRole('button', { name: WELCOME_NOTICE_COPY.zh.continueLabel }).click()
+      await welcome.waitFor({ state: 'detached', timeout: 15_000 })
     }
-    expect(await welcome.getByRole('button').allTextContents()).toEqual([
-      WELCOME_NOTICE_COPY.zh.continueLabel,
-    ])
-    const welcomeAria = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
-    await compareOrRefreshGolden(WELCOME_EXPECTED, welcomeAria, MODE)
-
-    // Observation is not acknowledgement: the exact version is persisted
-    // only by the explicit action, so a reload still presents this dialog.
-    const firstReloadWarnings = tripwire.warnings.length
-    await page.reload({ waitUntil: 'load' })
-    acknowledgeReloadConnectionLoss(tripwire, firstReloadWarnings)
-    await welcome.waitFor({ timeout: 15_000 })
-
-    await welcome.getByRole('button', { name: WELCOME_NOTICE_COPY.zh.continueLabel }).click()
-    await welcome.waitFor({ state: 'detached', timeout: 15_000 })
 
     const credentialStep = page.getByRole('dialog', { name: '添加一个 API Key 开始使用' })
     await credentialStep.waitFor({ timeout: 15_000 })
+    expect(await welcome.count()).toBe(0)
     const keyInput = credentialStep.getByLabel('API 密钥', { exact: true })
     await keyInput.waitFor({ timeout: 10_000 })
     const initial = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
@@ -91,8 +96,12 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     expect((await page.locator('body').ariaSnapshot()).includes(secret)).toBe(false)
     expect(browserConsole.some(line => line.includes(secret))).toBe(false)
 
-    const acknowledgedSettings = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
-    expect(acknowledgedSettings).toContain(`${WELCOME_NOTICE_ACK_FIELD}: ${WELCOME_NOTICE_VERSION}`)
+    const acknowledgedSettings = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8').catch((error: unknown) => {
+      if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return ''
+      throw error
+    })
+    if (ONESEVEN) expect(acknowledgedSettings).not.toContain(WELCOME_NOTICE_ACK_FIELD)
+    else expect(acknowledgedSettings).toContain(`${WELCOME_NOTICE_ACK_FIELD}: ${WELCOME_NOTICE_VERSION}`)
 
     // The ordinary Models surface reuses the refreshed join and exposes the
     // configured write-only placeholder without a reload.
@@ -117,17 +126,25 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     expect(await page.getByRole('dialog', { name: WELCOME_NOTICE_COPY.zh.title }).count()).toBe(0)
     expect(await page.getByRole('dialog', { name: '添加一个 API Key 开始使用' }).count()).toBe(0)
 
-    // An old acknowledgement means materially revised copy: welcome returns,
-    // while the already-configured provider step remains complete.
+    // Old acknowledgements cannot restore the notice in OneSeven; official
+    // builds still require acknowledgement of revised copy.
     await scaffold.ctx.settings.mutate(WELCOME_NOTICE_SETTINGS_NAMESPACE, [{
       op: 'set', path: [WELCOME_NOTICE_ACK_FIELD], value: 'previous-copy-version',
     }])
     const thirdReloadWarnings = tripwire.warnings.length
     await page.reload({ waitUntil: 'load' })
     acknowledgeReloadConnectionLoss(tripwire, thirdReloadWarnings)
-    await welcome.waitFor({ timeout: 15_000 })
-    await welcome.getByRole('button', { name: WELCOME_NOTICE_COPY.zh.continueLabel }).click()
-    await welcome.waitFor({ state: 'detached', timeout: 15_000 })
+    if (ONESEVEN) {
+      await page.locator('html[data-ui-brand="oneseven"]').waitFor()
+      await page.getByRole('button', { name: '设置', exact: true }).click()
+      await page.getByRole('dialog', { name: '设置', exact: true }).waitFor()
+      expect(await welcome.count()).toBe(0)
+      await page.keyboard.press('Escape')
+    } else {
+      await welcome.waitFor({ timeout: 15_000 })
+      await welcome.getByRole('button', { name: WELCOME_NOTICE_COPY.zh.continueLabel }).click()
+      await welcome.waitFor({ state: 'detached', timeout: 15_000 })
+    }
     expect(await page.getByRole('dialog', { name: '添加一个 API Key 开始使用' }).count()).toBe(0)
 
     expect((await page.content()).includes(secret)).toBe(false)

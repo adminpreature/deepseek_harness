@@ -229,6 +229,20 @@ describe.skipIf(MODE === 'record')('web e2e: document preview through Files', ()
     const tailHeading = await markdownTail.innerText()
     await preview.getByRole('heading', { name: heading, exact: true }).scrollIntoViewIfNeeded()
     await successShot(page, 'markdown')
+    const themeBeforePreview = scaffold.ctx.settings.get('ui-theme') as { preference: 'light' | 'dark' | 'system' }
+    try {
+      for (const [preference, foreground] of [
+        ['light', 'rgb(27, 27, 32)'], ['dark', 'rgb(245, 245, 247)'],
+      ] as const) {
+        await scaffold.ctx.settings.update('ui-theme', { preference })
+        const title = preview.getByRole('heading', { name: heading, exact: true })
+        await expect.poll(() => title.evaluate(element => getComputedStyle(element).color)).toBe(foreground)
+        expect(await title.isVisible()).toBe(true)
+        await successShot(page, `oneseven-review-${preference}`)
+      }
+    } finally {
+      await scaffold.ctx.settings.update('ui-theme', { preference: themeBeforePreview.preference })
+    }
     const markdownTab = column.locator('[data-dockkit-tab]').filter({ has: page.getByText('smoke.md', { exact: true }) })
     const markdownTabId = await markdownTab.getAttribute('data-dockkit-tab')
     expect(markdownTabId).not.toBeNull()

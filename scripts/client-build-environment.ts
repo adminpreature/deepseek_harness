@@ -110,7 +110,8 @@ export function repositoryGitDirty(root: string): boolean | undefined {
 
 /**
  * Resolve the public environment for a complete default build from one checkout.
- * Repository-owned metadata replaces inherited values; other public values pass through.
+ * OneSeven is the downstream default presentation. Explicit public overrides pass through;
+ * repository-owned version, commit and dirty metadata replace inherited values.
  * @param root - repository root supplying version and Git metadata.
  * @param environment - caller environment supplying optional commit and public extensions.
  * @returns complete public client environment for the default build.
@@ -125,6 +126,8 @@ export function repositoryClientBuildEnvironment(
   delete inherited.DSH_CLIENT_VERSION
   const dirty = repositoryGitDirty(root)
   return {
+    DSH_CLIENT_BUILD_PROFILE: 'oneseven',
+    DSH_CLIENT_TITLE: 'OneSeven / 壹柒',
     ...inherited,
     DSH_CLIENT_COMMIT_HASH: repositoryCommitHash(root, environment),
     ...(dirty === true ? { DSH_CLIENT_GIT_DIRTY: 'true' } : {}),

@@ -1,0 +1,42 @@
+{
+  "extends": "../tsconfig.client.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/client.tsbuildinfo"
+  },
+  "files": [],
+  "include": [
+    "dsh-*/src/client/**/*.ts",
+    "dsh-*/src/client/**/*.tsx",
+    "dsh-taskboard/src/shared/**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../packages/api/session-controller/tsconfig.client.json"
+    },
+    {
+      "path": "../packages/client/locale"
+    },
+    {
+      "path": "../packages/client/ui-conversation"
+    },
+    {
+      "path": "../packages/client/ui-layout"
+    },
+    {
+      "path": "../packages/client/ui-renderer"
+    },
+    {
+      "path": "../packages/client/ui-sidebar"
+    },
+    {
+      "path": "../packages/client/ui-slots"
+    },
+    {
+      "path": "../packages/core/session"
+    },
+    {
+      "path": "../vendor/cordis"
+    }
+  ]
+}

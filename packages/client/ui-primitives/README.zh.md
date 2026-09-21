@@ -133,6 +133,8 @@ kind: "package-library"
 
 -----
 
+Button 和 Modal 圆角支持品牌变量 `--dsh-control-radius`、`--dsh-control-radius-sm` 和 `--dsh-card-radius`；没有覆盖时保留内置几何，键盘和禁用行为保持不变。
+
 <a id="model-experience"></a>
 ## 模型体验
 

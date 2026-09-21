@@ -118,6 +118,8 @@ try {
 
 selector 必须是 owner currency 的纯函数。非 null 返回值作为 `matched` 传给组件；`PropsRuntime<'conversation.composer'>` 提供标准 Session 与 global props。Chain 顺序仍按 `priority` 升序，再按注册顺序；首个返回非 null 的 selector 获选。Shell 会在 takeover 下保持默认 composer 挂载。Request 状态、listener、response encoding 和任何 request-specific child slot 都属于业务 package，不进入 `SessionSnapshot`，也不由 core 包声明。
 
+空白任务入口使用紧凑的“开始新任务”提示。品牌几何通过 `--dsh-empty-title-size`、`--dsh-card-radius`、`--dsh-card-radius-mobile` 和 `--dsh-workspace-outline-display` 配置，不改变工作区选择和输入器操作。
+
 <a id="model-experience"></a>
 ## 模型体验
 

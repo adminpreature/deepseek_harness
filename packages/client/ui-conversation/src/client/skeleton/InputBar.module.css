@@ -58,7 +58,7 @@
      soft elevation tier. Fill: the input surface token (elevated in dark). */
   border: 0;
   --dsw-elevation-stroke-color: var(--dsw-alias-border-l2);
-  border-radius: 22px;
+  border-radius: var(--dsh-card-radius, 22px);
   background: var(--dsw-specific-input-major);
   box-shadow: var(--dsw-elevation-soft);
   /* The draft text follows the Settings font-size preference (the textarea,
@@ -89,9 +89,10 @@
 
 .cardWorkspaceTrigger::after {
   content: '';
+  display: var(--dsh-workspace-outline-display, block);
   position: absolute;
   inset: -1px;
-  border-radius: 22px;
+  border-radius: var(--dsh-card-radius, 22px);
   background: var(--dsw-alias-border-l4);
   transition: background-color 100ms ease;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='22' ry='22' stroke='black' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
@@ -397,4 +398,8 @@
   color: inherit;
   font-size: 12px;
   cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .card { border-radius: var(--dsh-card-radius-mobile, 22px); }
 }

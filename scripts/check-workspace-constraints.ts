@@ -58,6 +58,8 @@ const experimentalPackageNamePrefix = '@deepseek-ai/dsh-experimental-'
 const standardReleaseMemberDirectory = /^(?:packages\/(?!experimental\/)[^/]+\/[^/]+|apps\/(?!desktop(?:-host)?$)[^/]+|vendor\/[^/]+)$/
 /** Installable application assembled by electron-builder rather than published to npm. */
 const desktopApplicationDirectory = 'apps/desktop'
+/** Downstream-only presentation is bundled locally, never published in the official npm scope. */
+const downstreamBrandDirectory = 'packages/client/ui-brand-oneseven'
 const localArtifactDirs = new Set(['node_modules'])
 const appPackageFiles: Readonly<Record<string, readonly string[]>> = {
   '@deepseek-ai/dsh': ['lib/*.js', 'lib/types/*.d.ts'],
@@ -310,7 +312,8 @@ export function checkExperimentalManifest(
 }
 
 function isReleaseMemberDirectory(dir: string): boolean {
-  return standardReleaseMemberDirectory.test(dir) || isPublicExperimentalPackageDirectory(dir)
+  return dir !== downstreamBrandDirectory
+    && (standardReleaseMemberDirectory.test(dir) || isPublicExperimentalPackageDirectory(dir))
 }
 
 /**

@@ -402,7 +402,10 @@ describe('web e2e: seeded history renders through cold resume', () => {
     }
   })
 
-  it.skipIf(MODE === 'record')('matches the Figma context disclosure geometry', async () => {
+  it.skipIf(MODE === 'record').each([
+    ['light', 'rgb(255, 255, 255)', 'rgb(102, 102, 112)'],
+    ['dark', 'rgb(20, 20, 24)', 'rgb(170, 170, 181)'],
+  ] as const)('preserves context disclosure geometry in %s mode', async (preference, backgroundColor, color) => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-context-injection'))
     const disclosure = page.getByRole('button', { name: 'Context injection AGENTS.md', exact: true })
     expect(await disclosure.getAttribute('aria-expanded')).toBe('false')
@@ -411,51 +414,59 @@ describe('web e2e: seeded history renders through cold resume', () => {
     expect(collapsedIconBox?.width).toBe(14)
     expect(collapsedIconBox?.height).toBe(14)
 
-    await disclosure.click()
-    await expect.poll(() => disclosure.getAttribute('aria-expanded')).toBe('true')
-    const body = page.locator('[data-context-injection-body]')
-    await body.waitFor({ timeout: 5_000 })
-    // The instructions form names the file it reconciled above the text, and
-    // the text keeps the framing the model read rather than a cleaned excerpt.
-    expect(await body.locator('[data-context-files] li').allInnerTexts()).toEqual(['AGENTS.md\nloaded'])
-    expect(await body.locator('[data-context-text]').innerText()).toContain('<system-reminder>')
-    const headerBox = await disclosure.boundingBox()
-    const bodyBox = await body.boundingBox()
-    if (headerBox === null || bodyBox === null) throw new Error('context disclosure geometry is not measurable')
-    expect(headerBox.height).toBe(24)
-    expect(bodyBox.x - headerBox.x).toBe(22)
-    expect(bodyBox.y - headerBox.y - headerBox.height).toBe(4)
-    expect(bodyBox.height).toBe(141)
+    const previous = scaffold.ctx.settings.get('ui-theme')
+    if (typeof previous !== 'object' || previous === null) throw new Error('theme settings are not registered')
+    try {
+      await scaffold.ctx.settings.update('ui-theme', { preference })
+      await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe(preference)
+      await disclosure.click()
+      await expect.poll(() => disclosure.getAttribute('aria-expanded')).toBe('true')
+      const body = page.locator('[data-context-injection-body]')
+      await body.waitFor({ timeout: 5_000 })
+      // The instructions form names the file it reconciled above the text, and
+      // the text keeps the framing the model read rather than a cleaned excerpt.
+      expect(await body.locator('[data-context-files] li').allInnerTexts()).toEqual(['AGENTS.md\nloaded'])
+      expect(await body.locator('[data-context-text]').innerText()).toContain('<system-reminder>')
+      const headerBox = await disclosure.boundingBox()
+      const bodyBox = await body.boundingBox()
+      if (headerBox === null || bodyBox === null) throw new Error('context disclosure geometry is not measurable')
+      expect(headerBox.height).toBe(24)
+      expect(bodyBox.x - headerBox.x).toBe(22)
+      expect(bodyBox.y - headerBox.y - headerBox.height).toBe(4)
+      expect(bodyBox.height).toBe(141)
 
-    const style = await body.evaluate((element) => {
-      const computed = getComputedStyle(element)
-      return {
-        backgroundColor: computed.backgroundColor,
-        borderRadius: computed.borderRadius,
-        color: computed.color,
-        fontSize: computed.fontSize,
-        lineHeight: computed.lineHeight,
-        padding: [
-          computed.paddingTop,
-          computed.paddingRight,
-          computed.paddingBottom,
-          computed.paddingLeft,
-        ],
-        scrolls: element.scrollHeight > element.clientHeight,
-      }
-    })
-    expect(style).toEqual({
-      backgroundColor: 'rgb(249, 250, 251)',
-      borderRadius: '8px',
-      color: 'rgb(129, 133, 140)',
-      fontSize: '11px',
-      lineHeight: '16px',
-      padding: ['10px', '16px', '12px', '12px'],
-      scrolls: true,
-    })
+      const style = await body.evaluate((element) => {
+        const computed = getComputedStyle(element)
+        return {
+          backgroundColor: computed.backgroundColor,
+          borderRadius: computed.borderRadius,
+          color: computed.color,
+          fontSize: computed.fontSize,
+          lineHeight: computed.lineHeight,
+          padding: [
+            computed.paddingTop,
+            computed.paddingRight,
+            computed.paddingBottom,
+            computed.paddingLeft,
+          ],
+          scrolls: element.scrollHeight > element.clientHeight,
+        }
+      })
+      expect(style).toEqual({
+        backgroundColor,
+        borderRadius: '8px',
+        color,
+        fontSize: '11px',
+        lineHeight: '16px',
+        padding: ['10px', '16px', '12px', '12px'],
+        scrolls: true,
+      })
 
-    await disclosure.click()
-    await expect.poll(() => disclosure.getAttribute('aria-expanded')).toBe('false')
+    } finally {
+      if (await disclosure.getAttribute('aria-expanded') === 'true') await disclosure.click()
+      await expect.poll(() => disclosure.getAttribute('aria-expanded')).toBe('false')
+      await scaffold.ctx.settings.update('ui-theme', previous)
+    }
   })
 
   it.skipIf(MODE === 'record')('file-path tool rows rebuilt from the cold log open the right Sidebar', async () => {

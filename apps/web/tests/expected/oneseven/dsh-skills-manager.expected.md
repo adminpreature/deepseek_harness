@@ -1,0 +1,97 @@
+- dialog "设置":
+  - navigation:
+    - text: 设置
+    - button "通用设置":
+      - img
+      - text: 通用设置
+    - button "模型":
+      - img
+      - text: 模型
+    - button "内置插件":
+      - img
+      - text: 内置插件
+    - button "Skill 群":
+      - img
+      - text: Skill 群
+    - button "Agent 预设":
+      - img
+      - text: Agent 预设
+    - button "已归档会话":
+      - img
+      - text: 已归档会话
+  - button "打开配置文件"
+  - button "关闭":
+    - img
+    - text: 关闭
+  - paragraph: 把 skill 组织成不同场景的群，切换后立即生效，无需重启。
+  - status:
+    - img
+    - text: 已启用 Skill 群：OneSeven isolated skills
+  - button "新建 Skill 群":
+    - img
+    - text: 新建 Skill 群
+  - button "刷新 Skill 库"
+  - button "重置预设"
+  - list:
+    - listitem:
+      - text: 不加载
+      - button "启用"
+      - paragraph: 当前不加载任何 Skill。
+    - listitem:
+      - text: OneSeven isolated skills 当前
+      - button "编辑":
+        - img
+        - text: 编辑
+      - button "删除":
+        - img
+        - text: 删除
+      - paragraph: "Skills: 1"
+      - text: oneseven-check
+    - listitem:
+      - text: 办公
+      - button "启用"
+      - button "编辑":
+        - img
+        - text: 编辑
+      - button "删除":
+        - img
+        - text: 删除
+      - paragraph: 文档、表格、演示与周报
+      - paragraph: "Skills: 7"
+      - text: pdf xlsx pptx docx weekly-report-generator internal-comms doc-coauthoring
+    - listitem:
+      - text: Vibe Coding
+      - button "启用"
+      - button "编辑":
+        - img
+        - text: 编辑
+      - button "删除":
+        - img
+        - text: 删除
+      - paragraph: 前端原型、全栈实现与代码评审
+      - paragraph: "Skills: 15"
+      - text: frontend-design web-artifacts-builder webapp-testing code-review implement tdd to-spec domain-modeling diagnosing-bugs research wayfinder codebase-design improve-codebase-architecture prototype resolving-merge-conflicts
+    - listitem:
+      - text: 科研写作
+      - button "启用"
+      - button "编辑":
+        - img
+        - text: 编辑
+      - button "删除":
+        - img
+        - text: 删除
+      - paragraph: 论文、图表、引用与写作协作
+      - paragraph: "Skills: 11"
+      - text: doc-coauthoring writing-for-agents research pdf xlsx pptx internal-comms weekly-report-generator grill-with-docs to-questionnaire teach
+    - listitem:
+      - text: 全部启用
+      - button "启用"
+      - button "编辑":
+        - img
+        - text: 编辑
+      - button "删除":
+        - img
+        - text: 删除
+      - paragraph: 自动包含 Skill 库中的全部 Skill
+      - paragraph: "Skills: 1"
+      - text: 全部 Skill · 1

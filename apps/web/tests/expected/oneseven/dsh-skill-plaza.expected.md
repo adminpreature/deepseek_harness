@@ -1,0 +1,5 @@
+- heading "技能广场" [level=2]
+- paragraph: 浏览并调用已安装的技能
+- textbox "搜索技能名称或描述…"
+- button "全部"
+- text: 没有匹配的技能

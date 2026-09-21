@@ -1,0 +1,38 @@
+@font-face {
+  font-family: 'Alibaba PuHuiTi';
+  src: local('AlibabaPuHuiTi-3-55-Regular');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Alibaba PuHuiTi';
+  src: local('AlibabaPuHuiTi-3-65-Medium');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Alibaba PuHuiTi';
+  src: local('AlibabaPuHuiTi-3-75-SemiBold');
+  font-weight: 600;
+  font-display: swap;
+}
+html[data-ui-brand='oneseven'] .oneseven-brand-mark {
+  display: block;
+  flex: none;
+  object-fit: contain;
+}
+html[data-ui-brand='oneseven'] body[data-ds-dark-theme] .oneseven-brand-mark {
+  filter: invert(1);
+}
+html[data-ui-brand='oneseven'] .oneseven-brand-name {
+  font-family: var(--dsw-font-family);
+  color: var(--dsw-alias-label-primary);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+}
+html[data-ui-brand='oneseven'] :focus-visible {
+  outline: 2px solid var(--dsw-alias-link);
+  outline-offset: 3px;
+}

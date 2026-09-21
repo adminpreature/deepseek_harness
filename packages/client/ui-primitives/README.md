@@ -133,6 +133,8 @@ These pages place the atoms in the client stack and the design system.
 
 -----
 
+Button and Modal radii accept brand variables `--dsh-control-radius`, `--dsh-control-radius-sm` and `--dsh-card-radius`; absent overrides preserve the built-in geometry. Keyboard and disabled behavior are unchanged.
+
 <a id="model-experience"></a>
 ## Model Experience
 

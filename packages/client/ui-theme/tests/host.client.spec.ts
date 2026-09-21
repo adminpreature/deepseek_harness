@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { IndexInjection } from '@deepseek-ai/dsh-host-webserver'
 import { SettingsProvider, type SettingsNamespace } from '@deepseek-ai/dsh-settings'
 import {
-  DEFAULT_PREFERENCE, THEME_SETTINGS_NAMESPACE, apply,
+  DEFAULT_PREFERENCE, THEME_SETTINGS_NAMESPACE, Config, apply,
 } from '@deepseek-ai/dsh-client-ui-theme'
 
 class MemorySettings extends SettingsProvider {
@@ -81,5 +81,31 @@ describe('ui-theme host', () => {
     ctx.provide('settings', { register: () => () => {}, get: () => undefined } as never)
     await ctx.plugin({ apply }).await()
     expect(rowText(collect(ctx)[1])).toContain('const preference = "system"')
+  })
+})
+
+
+describe('deployment theme default', () => {
+  it('uses the configured default only for a new section and keeps saved light on reload', async () => {
+    const ctx = new Context()
+    await ctx.plugin(MemorySettings).await()
+    const fiber = ctx.plugin({ Config, apply }, { defaultPreference: 'dark' })
+    await fiber.await()
+    expect(ctx.settings.get(THEME_SETTINGS_NAMESPACE)).toEqual({ preference: 'dark', fontSize: 14 })
+    expect(rowText(collect(ctx)[1])).toContain('const preference = "dark"')
+    await ctx.settings.update(THEME_SETTINGS_NAMESPACE, { preference: 'light' })
+    await fiber.dispose()
+    await ctx.plugin({ Config, apply }, { defaultPreference: 'dark' }).await()
+    expect(ctx.settings.get(THEME_SETTINGS_NAMESPACE)).toEqual({ preference: 'light', fontSize: 14 })
+    expect(rowText(collect(ctx)[1])).toContain('const preference = "light"')
+    await ctx.fiber.dispose()
+  })
+
+  it('rejects unsupported defaults and provides the configured bootstrap without settings', async () => {
+    expect(() => Config({ defaultPreference: 'sepia' } as never)).toThrow()
+    const ctx = new Context()
+    await ctx.plugin({ Config, apply }, { defaultPreference: 'dark' }).await()
+    expect(rowText(collect(ctx)[1])).toContain('const preference = "dark"')
+    await ctx.fiber.dispose()
   })
 })

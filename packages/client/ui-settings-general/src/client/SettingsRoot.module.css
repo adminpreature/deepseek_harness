@@ -234,3 +234,43 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Keep every section reachable without squeezing its form into a narrow column. */
+@media (max-width: 600px) {
+  .panel {
+    flex-direction: column;
+    max-width: calc(100vw - 24px);
+    height: calc(100dvh - 24px);
+    border-radius: var(--dsh-card-radius-mobile, 24px);
+  }
+
+  .nav {
+    width: 100%;
+    padding: 16px 16px 0;
+    gap: 12px;
+  }
+
+  .navTitle { padding: 0; }
+
+  .navList {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .navCell {
+    flex: none;
+    height: 36px;
+    max-width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .content { min-height: 0; }
+
+  .header {
+    height: 44px;
+    padding: 8px 16px;
+  }
+
+  .options { padding: 0 16px 16px; }
+}

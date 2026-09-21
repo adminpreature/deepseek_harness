@@ -2,6 +2,8 @@
 
 English | [中文](README.zh.md)
 
+This checkout is the OneSeven / 壹柒 downstream distribution pinned to `dsh-v0.1.6-alpha.2`. Its default source build uses OneSeven presentation with both light and dark themes. The upstream npm command below installs the official product, not this customized distribution. See the [external plugin guide](external-plugins/README.md), [brand package](packages/client/ui-brand-oneseven/README.md) and [upgrade record](.agents/notes/proposed/architecture/2026-09-21-oneseven-pinned-upgrade.md) for scope and unfinished acceptance work.
+
 DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).
 
 It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).

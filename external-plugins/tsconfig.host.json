@@ -1,0 +1,42 @@
+{
+  "extends": "../tsconfig.host.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/host.tsbuildinfo"
+  },
+  "files": [],
+  "include": [
+    "dsh-*/src/index.ts",
+    "dsh-taskboard/src/host/**/*.ts",
+    "dsh-taskboard/src/shared/**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../packages/core/agent"
+    },
+    {
+      "path": "../packages/core/scope"
+    },
+    {
+      "path": "../packages/core/system-prompt"
+    },
+    {
+      "path": "../packages/core/tools"
+    },
+    {
+      "path": "../packages/host/webserver"
+    },
+    {
+      "path": "../packages/preset/agent-presets"
+    },
+    {
+      "path": "../packages/skill/skill"
+    },
+    {
+      "path": "../packages/workspace/workspace"
+    },
+    {
+      "path": "../vendor/cordis"
+    }
+  ]
+}

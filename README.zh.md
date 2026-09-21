@@ -2,6 +2,8 @@
 
 [English](README.md) | 中文
 
+本检出目录为固定在 `dsh-v0.1.6-alpha.2` 的 OneSeven / 壹柒下游发行版，默认源码构建使用完整支持亮暗双色的 OneSeven 展示。下方上游 npm 命令安装官方产品，不是本定制版。定制范围与尚未完成的验收参见[外部插件说明](external-plugins/README.zh.md)、[品牌包](packages/client/ui-brand-oneseven/README.zh.md)和[升级记录](.agents/notes/proposed/architecture/2026-09-21-oneseven-pinned-upgrade.zh.md)。
+
 DeepSeek Harness（`dsh`）是由 [DeepSeek AI](https://deepseek.com) 开发的开源 agent harness（智能体框架）。
 
 它构建于**一切皆插件**的架构之上，由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512)。

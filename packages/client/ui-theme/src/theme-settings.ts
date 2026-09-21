@@ -38,10 +38,19 @@ export interface ThemeSettings {
 }
 
 /** Durable theme schema; also the wire envelope the browser scope validates against. */
-export const ThemeSettingsSchema: z<ThemeSettings> = z.object({
-  [THEME_PREFERENCE_FIELD]: z.union([...THEME_PREFERENCES]).default(DEFAULT_PREFERENCE),
-  [FONT_SIZE_FIELD]: z.number().step(1).min(FONT_SIZE_MIN).max(FONT_SIZE_MAX).default(DEFAULT_FONT_SIZE),
-})
+export const ThemeSettingsSchema: z<ThemeSettings> = createThemeSettingsSchema(DEFAULT_PREFERENCE)
+
+/**
+ * Build a settings schema whose default applies only when no saved preference exists.
+ * @param defaultPreference - Validated deployment preference for new settings.
+ * @returns the theme settings schema, without changing stored values.
+ */
+export function createThemeSettingsSchema(defaultPreference: ThemePreference): z<ThemeSettings> {
+  return z.object({
+    [THEME_PREFERENCE_FIELD]: z.union([...THEME_PREFERENCES]).default(defaultPreference),
+    [FONT_SIZE_FIELD]: z.number().step(1).min(FONT_SIZE_MIN).max(FONT_SIZE_MAX).default(DEFAULT_FONT_SIZE),
+  })
+}
 
 /**
  * Narrow one wire or registry value to a persistable preference.

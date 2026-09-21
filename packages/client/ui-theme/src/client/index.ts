@@ -176,7 +176,7 @@ export class ThemeRuntime {
   constructor(ctx: ClientContext, host: SettingsScope<ThemeSettings>) {
     this.ctx = ctx
     this.host = host
-    this.preference = DEFAULT_PREFERENCE
+    this.preference = bootstrapPreference()
     // Non-browser runs (node e2e booting the client tree) have no matchMedia.
     this.media = typeof matchMedia === 'undefined' ? undefined : matchMedia('(prefers-color-scheme: dark)')
     this.snapshot = this.buildSnapshot()
@@ -356,6 +356,13 @@ export class ThemeRuntime {
     this.snapshot = this.buildSnapshot()
     this.ctx.emit('theme/change', this.snapshot)
   }
+}
+
+/** Read the validated server preference without persisting a new user choice. */
+function bootstrapPreference(): ThemePreference {
+  if (typeof document === 'undefined') return DEFAULT_PREFERENCE
+  const preference = document.documentElement.dataset.dsThemeSource
+  return isThemePreference(preference) ? preference : DEFAULT_PREFERENCE
 }
 
 /**

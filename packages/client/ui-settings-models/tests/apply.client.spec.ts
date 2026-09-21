@@ -62,6 +62,20 @@ function declare(slots: SlotRegistry): () => void {
 }
 
 describe('ui-settings-models apply', () => {
+  it('omits only the internal-testing notice in OneSeven builds', async () => {
+    vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', 'oneseven')
+    onTestFinished(() => { vi.unstubAllEnvs() })
+    const b = await bench()
+    declare(b.slots)
+    const fiber = b.ctx.plugin({ inject: [...inject], apply })
+    onTestFinished(() => fiber.dispose())
+    await fiber.await()
+    expect(b.slots.entries('settings.onboarding').map(entry => entry.options.id)).toEqual(['deepseek-official'])
+    expect(b.slots.entries('settings.section')[0]!.component).toBe(ModelsSection)
+    await fiber.dispose()
+    expect(b.slots.entries('settings.onboarding')).toHaveLength(0)
+  })
+
   it('keeps the host Loader entry inert', () => {
     expect(hostApply).not.toThrow()
   })

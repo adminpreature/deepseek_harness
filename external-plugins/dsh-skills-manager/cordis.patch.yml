@@ -1,0 +1,6 @@
+# dsh-skills-manager bundle patch.
+- insert:
+    - id: skills-manager
+      name: '@baikai233/dsh-skills-manager'
+      config:
+        rank: 250

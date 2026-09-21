@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dsh-skill-plaza",
+    "version": "0.1.0",
+    "sourceManifestSha256": "481f4a13e5d16d91eae243ac123434024d8338b615d94bf398c269fdc79685f1"
+  },
+  {
+    "name": "dsh-taskboard",
+    "version": "0.6.4",
+    "sourceManifestSha256": "35003dabace753bec18903e713cbba3850bd47a64621d0517fd6ab75d413ef6c"
+  },
+  {
+    "name": "dsh-prompt-manager",
+    "version": "1.5.0",
+    "sourceManifestSha256": "9b3fe0422e35104d7fb98efb4612b2988f394b2a5a3944d129e0f2d273e86ed7"
+  },
+  {
+    "name": "@baikai233/dsh-skills-manager",
+    "version": "0.1.0-rc.3",
+    "sourceManifestSha256": "d5f42132264bed9b2e26d6ed36e90ba23a446681ada0870b98a1efb78ca54421"
+  }
+]
