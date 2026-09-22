@@ -1,5 +1,6 @@
 /** Pinned external plugins loaded through isolated, managed Web profiles. */
-import { mkdir, readFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, unlink } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
@@ -263,5 +264,69 @@ it('executes a read-only task through the shipped agent and records a keyless re
   } finally {
     releaseAdapter()
     try { await browser.close() } finally { await scaffold.close() }
+  }
+})
+
+
+it('restores local plugin data and disabled bundles after a complete host teardown', async () => {
+  const home = await mkdtemp(join(tmpdir(), 'oneseven-plugin-restart-'))
+  const packages = ['dsh-skill-plaza', 'dsh-taskboard', 'dsh-prompt-manager', 'dsh-skills-manager']
+    .map(directory => ({ dir: root + directory, enabled: true }))
+  let scaffold: WebScaffold | undefined
+  const browser = await chromium.launch()
+  try {
+    scaffold = await launchWebScaffold({ harnessHome: home, profile: { packages } })
+    const page = await browser.newPage({ locale: 'zh-CN' })
+    await page.goto(scaffold.authenticatedUrl)
+    await connectFreshWorkspaceZh(page, scaffold.workspaceCwd)
+    const catalog = workspaceReply.parse(await (await scaffold.hostFetch('/dsh-taskboard/workspaces')).json())
+    expect((await postJson(scaffold, '/dsh-taskboard/tasks', {
+      title: 'Synthetic restart task', workspaceId: catalog.value[0]!.id,
+      urgency: 'normal', isolation: 'none', permission: 'read-only',
+    })).status).toBe(201)
+    const libraryRevision = z.object({ revision: z.number() }).parse(await (await scaffold.hostFetch('/prompt-manager/library')).json()).revision
+    expect((await postJson(scaffold, '/prompt-manager/library', {
+      baseRevision: libraryRevision, prompts: [{ id: 'restart-prompt', title: 'Synthetic restart prompt', content: 'No company data.' }],
+    })).status).toBe(200)
+    const manager = scaffold.ctx.get('skillsManage') as { importFiles(files: { name: string; content: string }[]): Promise<{ ok: boolean }> }
+    expect((await manager.importFiles([{
+      name: 'SKILL.md', content: '---\nname: restart-check\ndescription: Synthetic restart check\n---\nKeep all actions local.\n',
+    }])).ok).toBe(true)
+    await scaffold.ctx.settings.update('skills-manage', { activeGroup: 'all' })
+    await scaffold.ctx.settings.update('ui-theme', { preference: 'light' })
+    expect((await scaffold.ctx.pluginManager.setBundleEnabled('dsh-skill-plaza', false)).application).toBe('applied')
+    const manifestPath = join(home, 'profiles/scaffold/package.json')
+    const savedManifest = await readFile(manifestPath, 'utf8')
+    const persistedFiles = ['dsh-taskboard.json', 'dsh-prompt-manager/prompts.json', 'skills-manage/library/restart-check/SKILL.md']
+    const savedData = await Promise.all(persistedFiles.map(file => readFile(join(home, file), 'utf8')))
+    await page.close()
+    await scaffold.close()
+    scaffold = undefined
+    // The fixture installer recreates package links; durable files and the profile stay intact.
+    for (const name of ['dsh-skill-plaza', 'dsh-taskboard', 'dsh-prompt-manager', '@baikai233/dsh-skills-manager']) {
+      await unlink(join(home, 'profiles/scaffold/node_modules', name))
+    }
+    scaffold = await launchWebScaffold({ harnessHome: home, profile: { packages } })
+    expect(await readFile(manifestPath, 'utf8')).toBe(savedManifest)
+    expect(await Promise.all(persistedFiles.map(file => readFile(join(home, file), 'utf8')))).toEqual(savedData)
+    expect(scaffold.ctx.settings.get('ui-theme')).toMatchObject({ preference: 'light' })
+    expect((await scaffold.ctx.skills.list({})).map(skill => skill.name)).toContain('restart-check')
+    expect(promptLibrary.parse(await (await scaffold.hostFetch('/prompt-manager/library')).json()).prompts)
+      .toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Synthetic restart prompt' })]))
+    const board = z.object({ ok: z.literal(true), value: ledgerSchema }).parse(await (await scaffold.hostFetch('/dsh-taskboard/state')).json())
+    expect(board.value.tasks).toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Synthetic restart task', executions: [] })]))
+    const restartedPage = await browser.newPage({ locale: 'zh-CN' })
+    const tripwire = watchConsole(restartedPage)
+    await restartedPage.goto(scaffold.authenticatedUrl)
+    await restartedPage.getByRole('button', { name: '任务看板', exact: true }).waitFor()
+    expect(await restartedPage.getByRole('button', { name: '技能广场', exact: true }).count()).toBe(0)
+    expect((await scaffold.ctx.pluginManager.setBundleEnabled('dsh-skill-plaza', true)).application).toBe('applied')
+    await restartedPage.getByRole('button', { name: '技能广场', exact: true }).click()
+    await restartedPage.locator('.dsh-skp-card').filter({ hasText: 'restart-check' }).waitFor()
+    expect(tripwire.pageErrors).toEqual([])
+  } finally {
+    try { await browser.close() } finally {
+      try { await scaffold?.close() } finally { await rm(home, { recursive: true, force: true }) }
+    }
   }
 })

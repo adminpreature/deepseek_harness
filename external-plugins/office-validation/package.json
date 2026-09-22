@@ -1,0 +1,8 @@
+{
+  "name": "oneseven-office-validation",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "dsh-office-toolkit": "0.3.30"
+  }
+}

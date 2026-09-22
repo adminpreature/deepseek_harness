@@ -1,0 +1,20 @@
+{
+  "package": "dsh-office-toolkit",
+  "version": "0.3.30",
+  "registry": "https://registry.npmjs.org/",
+  "tarball": "https://registry.npmjs.org/dsh-office-toolkit/-/dsh-office-toolkit-0.3.30.tgz",
+  "integrity": "sha512-YVKeFrunije+YBBfPikxwKvZZr7cp2YOu1j7ekCCSJdi8UhCHuc4y81U3hI6/74cDMADgbfgq215xCQwKq437Q==",
+  "repository": "https://github.com/cnkids/dsh-office-toolkit",
+  "engines": {
+    "node": ">=20"
+  },
+  "install": {
+    "command": "npm ci --ignore-scripts --strict-peer-deps --workspaces=false",
+    "scripts_allowed": false
+  },
+  "tested_host": "dsh-v0.1.6-alpha.2",
+  "tested_runtime": {
+    "node": "22.23.1",
+    "pnpm": "11.7.0"
+  }
+}
