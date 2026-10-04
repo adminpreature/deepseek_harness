@@ -47,3 +47,8 @@ worktrees/
 .agents/worktrees/
 .typert-*/
 native/system/test/bin/
+demo-preview.tar.gz
+.setup-commands.sh
+.quick-setup.sh
+.git-commit-plan.md
+EXECUTE-NOW.md
