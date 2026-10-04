@@ -11,6 +11,21 @@
 
 /** The stylesheet text. */
 export const STYLES = `
+.dsh-skp-picker-trigger { display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border:0; border-radius:6px; background:transparent; color:var(--dsw-alias-label-secondary); font:inherit; font-size:12px; cursor:pointer; white-space:nowrap; }
+.dsh-skp-picker-trigger:hover { background:var(--dsw-alias-bg-layer-2); color:var(--dsw-alias-label-primary); }
+.dsh-skp-picker-trigger:disabled { opacity:.5; cursor:default; }
+.dsh-skp-picker { position:fixed; top:auto; right:auto; margin:0; box-sizing:border-box; width:min(360px, calc(100vw - 16px)); max-height:min(440px, 65dvh); padding:14px; border:1px solid var(--dsw-alias-border-l2); border-radius:14px; color:var(--dsw-alias-label-primary); background:var(--dsw-alias-bg-base); box-shadow:0 12px 40px #0003; overflow:auto; }
+.dsh-skp-picker::backdrop { background:transparent; }
+.dsh-skp-picker-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:14px; }
+.dsh-skp-picker-heading button { background:transparent; color:inherit; border:0; font-size:20px; cursor:pointer; }
+.dsh-skp-picker .dsh-skp-search { width:100%; min-width:0; box-sizing:border-box; border-radius:8px; }
+.dsh-skp-picker-hint { font-size:12px; color:var(--dsw-alias-label-secondary); margin:8px 0; }
+.dsh-skp-picker-results { display:flex; flex-direction:column; gap:4px; }
+.dsh-skp-picker-item { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; flex:none; text-align:left; padding:10px; border:0; border-radius:8px; background:transparent; color:inherit; font:inherit; font-size:13px; cursor:pointer; }
+.dsh-skp-picker-item:hover, .dsh-skp-picker-item:focus-visible { background:var(--dsw-alias-bg-layer-2); }
+.dsh-skp-picker-item small { color:var(--dsw-alias-label-secondary); }
+.dsh-skp-picker-description { flex-basis:100%; font-size:12px; color:var(--dsw-alias-label-secondary); line-height:1.5; }
+
 .dsh-skp-page-container { height:100%; min-height:0; overflow:auto; color:var(--dsw-alias-label-primary); background:var(--dsw-alias-bg-base); }
 
 .dsh-skp-page { display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 20px 28px; gap: 18px; box-sizing: border-box; overflow-y: auto; }

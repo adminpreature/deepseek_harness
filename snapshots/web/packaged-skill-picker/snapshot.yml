@@ -1,0 +1,9 @@
+version: 1
+scenario: packaged-skill-picker
+profile: web
+composition: oneseven-skill-plaza
+recording: authored
+header:
+  class: skill
+session:
+  source: ../../session/skill-load/session.v3.jsonl

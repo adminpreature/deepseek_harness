@@ -1,51 +1,11 @@
-/**
- * Host loader entry for dsh-skill-plaza.
- *
- * Wiring: an OWN `webServer` route under `/skill-plaza` (not the shared `/api`
- * loopback RPC channel) that reads the skill catalog off `ctx.skills` — the
- * plaza is a standalone full-page browser, not bound to one open
- * conversation, so it cannot use the session-scoped `skills.list` wire API
- * apiproxy exposes (that call requires a `sessionId` and resolves both `cwd`
- * and view `scope` from that session's header/live agent). On this
- * deployment shape (dsh-web-app), skill discovery is preset-layered:
- * `dsh-skill-filesystem` and `dsh-tool-skill` are disabled on the host's
- * global layer and instead mount inside each agent preset's own composition
- * (see that bundle's `cordis.patch.yml`), so a scope-less
- * `ctx.skills.list({})` read sees no provider and returns an empty catalog.
- * `listPlazaSkills` resolves the DEFAULT preset's standing scope via
- * `ctx.agentPresets.standingKeyFor()` (mounts or reuses that composition with
- * no agent/session/turn — the same fallback apiproxy's own session-bound
- * handler takes for an unrecorded session) and reads through that scope,
- * falling back to the scope-less global read when no preset service is
- * mounted (a deployment that keeps skill-filesystem on the host layer
- * directly).
- *
- * A shared `/api` interceptor (`connection.rpc.intercept`) is deliberately
- * NOT used here: that channel accepts exactly one interceptor process-wide
- * (`HostConnectionService.registerInterceptor` throws "already has an
- * interceptor" on a second registration), and `@deepseek-ai/dsh-api-gateway`
- * (the typert Remote dispatcher every `@Remote`-decorated Service method
- * rides, including `commands.list`) already claims it. An earlier version of
- * this plugin registered its own `/api` interceptor and won the race against
- * dsh-api-gateway's registration, silently breaking every typert Remote
- * endpoint host-wide (observed as the web UI's slash-command directory
- * warmup failing with a 404 on `commands/list`). `dsh-prompt-manager` avoids
- * this by mounting its own `webServer` prefix route instead of the shared
- * channel; this plugin follows that same pattern.
- *
- * Export shape follows the dsh-tool-todo lesson: a function/namespace plugin —
- * `name` / `inject` / `apply`, NO default export.
- *
- * @module dsh-skill-plaza
- */
+/** Packaged content-skill provider and default-preset catalog route for Skill Plaza. */
 import type { Context } from '@deepseek-ai/cordis'
 import type { IncomingMessage, ServerResponse } from 'node:http'
-// Type-only module imports: load the cordis Context augmentations
-// (ctx.skills / ctx.agentPresets) and vanish at compile time — the built
-// host half keeps ZERO runtime @deepseek-ai imports, so a published copy
-// never shadows the CLI-internal dsh-skill/dsh-agent-presets builds with an
-// npm-mirror copy from the profile's node_modules.
-import type {} from '@deepseek-ai/dsh-skill'
+import { BUNDLED_SKILL_RANK, isSkillName, type SkillCandidate, type SkillDefinition, type SkillProvider } from '@deepseek-ai/dsh-skill'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { parse as parseYaml } from 'yaml'
 import type {} from '@deepseek-ai/dsh-agent-presets'
 import type { ScopeKey } from '@deepseek-ai/dsh-scope'
 
@@ -57,6 +17,50 @@ export const name = 'dsh-skill-plaza'
 /** Required host services: the skill registry and this plugin's own HTTP route. */
 export const inject = ['skills', 'webServer']
 
+/**
+ * Load packaged content skills, rejecting invalid or duplicate invocation ids at startup.
+ * @param root - Packaged category/skill directories; defaults to this plugin's resources.
+ * @returns A provider whose catalog and bodies come from the same validated files.
+ */
+export function createBundledProvider(root = fileURLToPath(new URL('../skills/', import.meta.url))): SkillProvider {
+  const definitions = new Map<string, SkillDefinition>()
+  const candidates: SkillCandidate[] = []
+  const provider = 'oneseven-presets'
+  for (const category of readdirSync(root, { withFileTypes: true })) {
+    if (!category.isDirectory()) continue
+    for (const directory of readdirSync(join(root, category.name), { withFileTypes: true })) {
+      if (!directory.isDirectory()) continue
+      const path = join(root, category.name, directory.name, 'SKILL.md')
+      const raw = readFileSync(path, 'utf8')
+      const match = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u.exec(raw)
+      if (!match?.[1]) throw new Error(`skill-plaza: missing frontmatter in ${path}`)
+      const data: unknown = parseYaml(match[1])
+      if (typeof data !== 'object' || data === null || !('name' in data) || !('description' in data)
+        || !('metadata' in data) || typeof data.metadata !== 'object' || data.metadata === null
+        || !('slug' in data.metadata) || typeof data.metadata.slug !== 'string' || !isSkillName(data.metadata.slug)
+        || typeof data.name !== 'string' || !data.name.trim() || typeof data.description !== 'string' || !data.description.trim()) {
+        throw new Error(`skill-plaza: name, description and valid metadata.slug required in ${path}`)
+      }
+      const name = data.metadata.slug
+      const content = raw.slice(match[0].length).trim()
+      if (!content || definitions.has(name)) throw new Error(`skill-plaza: empty content or duplicate slug in ${path}`)
+      const definition: SkillDefinition = {
+        name, description: data.description, provider, source: 'bundled', content,
+        invocation: { modelInvocable: true, userInvocable: true },
+        metadata: { ...data.metadata, displayName: data.name, category: category.name.replace(/^\d+-/u, '') },
+      }
+      definitions.set(name, definition)
+      candidates.push({ name, description: definition.description, provider, source: 'bundled',
+        invocation: definition.invocation, rank: BUNDLED_SKILL_RANK, locator: name })
+    }
+  }
+  return {
+    name: provider,
+    async list(options) { options.signal?.throwIfAborted(); return candidates },
+    async get(candidate, options) { options.signal?.throwIfAborted(); return definitions.get(candidate.name) },
+  }
+}
+
 /** Route prefix this plugin owns exclusively (no shared-channel contention). */
 const ROUTE_PREFIX = '/skill-plaza'
 
@@ -64,6 +68,7 @@ const ROUTE_PREFIX = '/skill-plaza'
 interface PlazaSkillEntry {
   readonly name: string
   readonly description: string
+  readonly displayName?: string
   readonly whenToUse?: string
   readonly modelInvocable: boolean
   readonly category?: string
@@ -120,11 +125,13 @@ async function listPlazaSkills(ctx: Context): Promise<PlazaSkillEntry[]> {
       metadata = undefined // Metadata is opportunistic display data; a failed reload just omits it.
     }
     const category = readString(metadata, 'category')
+    const displayName = readString(metadata, 'displayName')
     const tags = readStringArray(metadata, 'tags')
     const icon = readString(metadata, 'icon')
     return {
       name: skill.name,
       description: skill.description,
+      ...displayName === undefined ? {} : { displayName },
       ...skill.whenToUse === undefined ? {} : { whenToUse: skill.whenToUse },
       modelInvocable: skill.invocation.modelInvocable,
       ...category === undefined ? {} : { category },
@@ -172,6 +179,7 @@ async function routeHandler(ctx: Context, req: IncomingMessage, res: ServerRespo
  * @param ctx - the plugin context (skills + webServer injected).
  */
 export function apply(ctx: Context): void {
+  ctx.skills.registerProvider(() => createBundledProvider())
   ctx.effect(() => ctx.webServer.register({
     kind: 'prefix',
     path: ROUTE_PREFIX,

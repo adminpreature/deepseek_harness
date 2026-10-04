@@ -153,7 +153,7 @@ describe('client build environment', () => {
       DSH_CLIENT_VERSION: 'spoofed',
     })).toEqual({
       DSH_CLIENT_BUILD_PROFILE: 'oneseven',
-      DSH_CLIENT_TITLE: 'OneSeven / 壹柒',
+      DSH_CLIENT_TITLE: 'Agents lite',
       DSH_CLIENT_COMMIT_HASH: COMMIT_HASH.slice(0, 7),
       DSH_CLIENT_EXTRA: 'preserved',
       DSH_CLIENT_VERSION: '1.2.3-rc.4',
@@ -189,7 +189,7 @@ describe('client build environment', () => {
       DSH_CLIENT_COMMIT_HASH: COMMIT_HASH,
     })).toEqual({
       DSH_CLIENT_BUILD_PROFILE: 'oneseven',
-      DSH_CLIENT_TITLE: 'OneSeven / 壹柒',
+      DSH_CLIENT_TITLE: 'Agents lite',
       DSH_CLIENT_COMMIT_HASH: COMMIT_HASH.slice(0, 7),
       DSH_CLIENT_GIT_DIRTY: 'true',
       DSH_CLIENT_VERSION: '1.2.3-rc.4',
@@ -215,7 +215,7 @@ describe('client build environment', () => {
       DSH_CLIENT_GIT_DIRTY: 'true',
     })).toEqual({
       DSH_CLIENT_BUILD_PROFILE: 'oneseven',
-      DSH_CLIENT_TITLE: 'OneSeven / 壹柒',
+      DSH_CLIENT_TITLE: 'Agents lite',
       DSH_CLIENT_COMMIT_HASH: COMMIT_HASH.slice(0, 7),
       DSH_CLIENT_VERSION: '2.0.0',
     })

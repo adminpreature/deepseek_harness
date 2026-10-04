@@ -49,11 +49,12 @@ describe('web e2e: OneSeven paired themes', () => {
   })
 
   it('renders the supplied brand and a task entry, not the promotional heading', async () => {
-    expect(await page.title()).toBe('OneSeven / 壹柒')
+    expect(await page.title()).toBe('Agents lite')
+    await page.getByText('Agents lite', { exact: true }).waitFor()
     await page.getByText('Start a task', { exact: true }).waitFor({ timeout: 15_000 })
     expect(await page.locator('body').getAttribute('data-ds-dark-theme')).not.toBeNull()
     expect(await page.getByText('Into the Unknown', { exact: true }).count()).toBe(0)
-    const image = page.getByRole('img', { name: 'OneSeven', exact: true }).first()
+    const image = page.getByRole('img', { name: 'Agents lite', exact: true }).first()
     expect(await image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
     await compareOrRefreshGolden(EXPECTED, await captureStableAria(page, '[class*="headline"]', scaffold.workspaceCwd), webSnapshotMode())
   })

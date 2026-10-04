@@ -32,7 +32,7 @@ The plugin owns the paired palette in `src/client/tokens.ts`. It supplies semant
 
 ### Assets
 
-The branded Web app serves the supplied OneSeven mark under `/assets/`. Typography uses locally installed Alibaba PuHuiTi 400/500/600 faces, then the operating-system font stack. It downloads no font files. Devices without PuHuiTi use fallback glyphs; layout must tolerate their different metrics. Font subsetting and redistribution require a separately verified license; the deployment does not transform the supplied font binaries. The mark preserves its aspect ratio and inverts in dark mode. The Web build owns title, favicon and manifest metadata independently of the dynamic plugin.
+The sidebar name and default Web build title are `Agents lite`; internal package identifiers and the supplied OneSeven mark remain unchanged. The branded Web app serves the mark under `/assets/`. Typography uses locally installed Alibaba PuHuiTi 400/500/600 faces, then the operating-system font stack. It downloads no font files. Devices without PuHuiTi use fallback glyphs; layout must tolerate their different metrics. Font subsetting and redistribution require a separately verified license; the deployment does not transform the supplied font binaries. The mark preserves its aspect ratio and inverts in dark mode. The Web build owns title, favicon and manifest metadata independently of the dynamic plugin.
 
 -----
 

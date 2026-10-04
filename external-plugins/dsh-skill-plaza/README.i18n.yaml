@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write external-plugins/dsh-skill-plaza/README.md
-README.md: b0dc1ae28477bf33e40f4367fcd8bcc21ff792aa
-README.zh.md: 19bdaf93deff18dcd665d5c7ce3072e798e345c8
+README.md: dd6b32032333396dce3515c834b71fc6b7b6b0ad
+README.zh.md: 7947bc562479b915cac3a50bde66ad040b40a9b1

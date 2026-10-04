@@ -42,7 +42,7 @@ interface CardProps extends PropsLocale<'oneseven.skill-plaza'> {
 }
 
 function SkillCard({ skill, onInvoke, t }: CardProps) {
-  const name = displayName(skill.name, skill.name)
+  const name = skill.displayName ?? displayName(skill.name, skill.name)
   const description = displayDescription(skill.name, skill.description)
   return (
     <button
@@ -72,7 +72,7 @@ interface FeaturedCardProps {
 }
 
 function FeaturedCard({ skill, onInvoke }: FeaturedCardProps) {
-  const name = displayName(skill.name, skill.name)
+  const name = skill.displayName ?? displayName(skill.name, skill.name)
   const description = displayDescription(skill.name, skill.description)
   return (
     <button type="button" className="dsh-skp-featured-card" onClick={() => { onInvoke(skill.name) }} title={description}>
@@ -146,7 +146,7 @@ export function SkillPlaza({ client, onPick, active, t }: SkillPlazaProps) {
       if (activeTab === UNCATEGORIZED_TAB && skill.category !== undefined) return false
       if (activeTab !== ALL_TAB && activeTab !== UNCATEGORIZED_TAB && skill.category !== activeTab) return false
       if (q === '') return true
-      const name = displayName(skill.name, skill.name)
+      const name = skill.displayName ?? displayName(skill.name, skill.name)
       const description = displayDescription(skill.name, skill.description)
       return name.toLowerCase().includes(q) || description.toLowerCase().includes(q)
         || skill.name.toLowerCase().includes(q) || skill.description.toLowerCase().includes(q)

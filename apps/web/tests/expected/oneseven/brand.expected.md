@@ -1,2 +1,2 @@
-- img "OneSeven"
+- img "Agents lite"
 - text: Start a task Preview

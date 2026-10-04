@@ -55,6 +55,7 @@
     "tests/settings-chrome.e2e.ts",
     "tests/oneseven-brand.e2e.ts",
     "tests/oneseven-external-plugins.e2e.ts",
+    "tests/packaged-skill-picker.e2e.ts",
     "tests/oneseven-office-toolkit.e2e.ts",
     "tests/desktop-updates.e2e.ts",
     "tests/models-settings.e2e.ts",

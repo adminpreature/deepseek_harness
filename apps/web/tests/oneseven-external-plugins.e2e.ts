@@ -9,7 +9,7 @@ import { z } from 'zod'
 import { assembleContextFor } from '@deepseek-ai/dsh-agent'
 import { SessionId } from '@deepseek-ai/dsh-session'
 import { renderPrompt } from '@deepseek-ai/dsh-system-prompt'
-import { LlmAdapter, type GenerateOptions, type StreamChunk } from '@deepseek-ai/dsh-llm'
+import { MessageId, LlmAdapter, type GenerateOptions, type StreamChunk } from '@deepseek-ai/dsh-llm'
 import { launchWebScaffold, watchConsole, captureStableAria, compareOrRefreshGolden, webSnapshotMode, type WebScaffold } from './scaffold.ts'
 
 import { connectFreshWorkspaceZh } from './support.ts'
@@ -217,6 +217,96 @@ it('coexists with all four plugins and inserts skills into only the selected Lex
     await expect.poll(() => first.locator('[data-composer-input]').innerText()).toContain('/oneseven-check First draft')
     for (const tripwire of tripwires) expect(tripwire.pageErrors).toEqual([])
   } finally {
+    try { await browser.close() } finally { await scaffold.close() }
+  }
+})
+
+it('searches packaged skills beside the composer without sending and loads the selected instructions', async () => {
+  const scaffold = await launchWebScaffold({ profile: { packages: [{ dir: root + 'dsh-skill-plaza', enabled: true }] } })
+  const browser = await chromium.launch()
+  let modelCalls = 0
+  let modelInput = ''
+  class LocalSkillAdapter extends LlmAdapter {
+    override async *stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+      options.signal?.throwIfAborted()
+      modelCalls++
+      modelInput = JSON.stringify(options.messages)
+      yield { type: 'block-start', index: 0, blockType: 'text' }
+      yield { type: 'text-delta', index: 0, text: 'Skill instructions received.' }
+      yield { type: 'block-end', index: 0, block: { type: 'text', text: 'Skill instructions received.' } }
+      yield { type: 'finish', reason: { kind: 'stop' } }
+    }
+  }
+  const release = scaffold.ctx.llm.registerAdapter(['oneseven-skills-test'], new LocalSkillAdapter())
+  try {
+    const page = await browser.newPage({ locale: 'zh-CN' })
+    const tripwire = watchConsole(page)
+    await page.goto(scaffold.authenticatedUrl)
+    await connectFreshWorkspaceZh(page, scaffold.workspaceCwd)
+    const composer = page.locator('[data-composer-input][contenteditable="true"]')
+    await composer.fill('保留我的会议记录 🙂')
+    await page.getByRole('button', { name: 'Skill', exact: true }).click()
+    const picker = page.getByRole('dialog', { name: '选择技能' })
+    await picker.getByRole('searchbox').fill('会议纪要')
+    await picker.getByRole('button', { name: /会议纪要 企业办公/ }).waitFor()
+    await compareOrRefreshGolden(fileURLToPath(new URL('./expected/oneseven/skill-picker.expected.md', import.meta.url)), await captureStableAria(page, '.dsh-skp-picker', scaffold.workspaceCwd), webSnapshotMode())
+    await picker.getByRole('searchbox').fill('no-such-skill-123')
+    await picker.getByText('没有匹配的技能', { exact: true }).waitFor()
+    await page.keyboard.press('Escape')
+    expect(await composer.innerText()).toBe('保留我的会议记录 🙂')
+    await page.getByRole('button', { name: 'Skill', exact: true }).click()
+    await picker.getByRole('searchbox').fill('meeting-minutes')
+    await picker.getByRole('button', { name: /会议纪要 企业办公/ }).click()
+    await expect.poll(() => composer.innerText()).toBe('/meeting-minutes 保留我的会议记录 🙂')
+    expect(modelCalls).toBe(0)
+    await page.reload()
+    await expect.poll(() => composer.innerText()).toBe('/meeting-minutes 保留我的会议记录 🙂')
+
+    await page.route('**/skill-plaza/list', route => route.fulfill({ status: 503, body: 'unavailable' }))
+    await page.getByRole('button', { name: 'Skill', exact: true }).click()
+    await picker.getByRole('alert').waitFor()
+    await page.unroute('**/skill-plaza/list')
+    await picker.getByRole('button', { name: '重试', exact: true }).click()
+    await picker.getByRole('searchbox').fill('会议纪要')
+    await picker.getByRole('button', { name: /会议纪要 企业办公/ }).waitFor()
+    const evidence = process.env.DSH_ONESEVEN_EVIDENCE_DIR
+    if (evidence) {
+      await mkdir(evidence, { recursive: true })
+      await page.screenshot({ path: join(evidence, 'skill-picker-desktop.png'), fullPage: true })
+    }
+    await page.keyboard.press('Escape')
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.getByRole('button', { name: 'Skill', exact: true }).click()
+    const bounds = await picker.boundingBox()
+    expect(bounds).not.toBeNull()
+    expect(bounds!.x).toBeGreaterThanOrEqual(0)
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(390)
+    if (evidence) await page.screenshot({ path: join(evidence, 'skill-picker-mobile.png'), fullPage: true })
+    await page.keyboard.press('Escape')
+    await page.getByRole('button', { name: '技能广场', exact: true }).click()
+    await page.getByRole('button', { name: '企业办公', exact: true }).click()
+    await expect.poll(() => page.locator('.dsh-skp-card').count()).toBe(15)
+    await page.locator('.dsh-skp-card').filter({ has: page.getByText('会议纪要', { exact: true }) }).click()
+    await expect.poll(() => composer.innerText()).toContain('保留我的会议记录 🙂')
+
+    const handle = await scaffold.ctx.agents.create({ sessionId: SessionId('packaged-skill-check'), meta: { cwd: scaffold.workspaceCwd }, agentOptions: { provider: 'oneseven-skills-test', model: 'local' }, setup: scope => scaffold.ctx.agentPresets.mount(scope).then(() => undefined) })
+    try {
+      handle.agent.followup({ id: MessageId('packaged-skill-message'), role: 'user', content: [{ type: 'text', text: '/meeting-minutes 整理会议记录。' }], source: { kind: 'user' } })
+      await handle.agent.whenIdle()
+      expect(modelCalls).toBe(1)
+      expect(modelInput).toContain('不发送消息、不创建任务')
+      expect(modelInput).toContain('meeting-minutes')
+      const logged = JSON.stringify(handle.agent.session.snapshotEvents())
+      expect(logged).toContain('skill-invocation')
+      expect(logged).toContain('不发送消息、不创建任务')
+    } finally { await handle.dispose() }
+    expect(tripwire.pageErrors).toEqual([])
+    expect((await scaffold.ctx.skills.list({})).filter(skill => skill.provider === 'oneseven-presets')).toHaveLength(80)
+    expect((await scaffold.ctx.pluginManager.setBundleEnabled('dsh-skill-plaza', false)).application).toBe('applied')
+    await expect.poll(async () => (await scaffold.ctx.skills.list({})).filter(skill => skill.provider === 'oneseven-presets').length).toBe(0)
+    await expect.poll(() => page.getByRole('button', { name: 'Skill', exact: true }).count()).toBe(0)
+  } finally {
+    release()
     try { await browser.close() } finally { await scaffold.close() }
   }
 })

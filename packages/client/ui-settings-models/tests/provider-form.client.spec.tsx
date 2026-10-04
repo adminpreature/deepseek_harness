@@ -390,6 +390,23 @@ describe('model list editing', () => {
     ])
   })
 
+  it('masks an existing endpoint without changing it when other fields are saved', async () => {
+    const { mutate } = await mountSection({
+      providers: { 'acme-gateway': { api: 'openai-completions', baseURL: 'https://proxy.example/v1' } },
+      declaredRoutes: ['acme-gateway'],
+    })
+    openEditor('acme-gateway')
+
+    const endpoint = screen.getByLabelText<HTMLInputElement>(en.baseUrl)
+    expect(endpoint.type).toBe('password')
+    expect(endpoint.value).toBe('https://proxy.example/v1')
+
+    fireEvent.change(screen.getByLabelText(en.customDisplayName), { target: { value: 'Demo' } })
+    fireEvent.click(screen.getByText(en.apply))
+    await waitFor(() => { expect(mutate).toHaveBeenCalled() })
+    expect(firstMutate(mutate).ops).not.toContainEqual(expect.objectContaining({ path: ['providers', 'acme-gateway', 'baseURL'] }))
+  })
+
   it('shows the adapter defaults as inherited until an edit takes them over', async () => {
     await mountSection({ providers: { openai: { baseURL: 'https://proxy.example/v1' } } })
     openEditor('openai')

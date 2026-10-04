@@ -10,6 +10,7 @@ import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type {} from '@deepseek-ai/dsh-api-session-controller/client'
 import type { MainPanelId } from '@deepseek-ai/dsh-client-ui-layout/client'
 import { createClient } from './api.ts'
+import { SkillPicker } from './SkillPicker.tsx'
 import { SkillPlaza } from './SkillPlaza.tsx'
 import { STYLES } from './styles.ts'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
@@ -39,7 +40,8 @@ export function apply(ctx: Context): void {
   const client = createClient()
   let pending: { sessionId: SessionId; skill: string } | undefined
   ctx.effect(() => () => { pending = undefined }, 'skill-plaza: pending selection')
-  function InsertSelection({ sessionId, inputActions }: PropsRuntime<'conversation.input.left'>) {
+  function InsertSelection({ sessionId, inputActions, useInput, t }: PropsRuntime<'conversation.input.left'> & PropsLocale<'oneseven.skill-plaza'>) {
+    const phase = useInput(state => state.phase)
     useEffect(() => {
       let mounted = true
       // The main panel unmounts the conversation's draft mirror. Deliver only
@@ -57,10 +59,18 @@ export function apply(ctx: Context): void {
       })
       return () => { mounted = false }
     }, [sessionId, inputActions])
-    return null
+    return <SkillPicker client={client} t={t} disabled={phase !== 'plain' || !inputActions} onPick={name => {
+      const binding = ctx.sessions.binding(sessionId)
+      if (!binding || !inputActions) return
+      const input = ctx.conversation.input.for(binding.ctx)
+      const state = input.state.getSnapshot()
+      if (state.phase !== 'plain') return
+      inputActions.setDraft(`/${name} ${state.draft}`)
+      input.focus()
+    }} />
   }
   ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
-    name: 'conversation.input.left', id: 'skill-plaza-selection',
+    name: 'conversation.input.left', id: 'skill-plaza-selection', locale: 'oneseven.skill-plaza',
   }, InsertSelection))
   function Panel({ t }: PropsLocale<'oneseven.skill-plaza'>) {
     const [error, setError] = useState('')

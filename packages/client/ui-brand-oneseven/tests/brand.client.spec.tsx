@@ -3,7 +3,7 @@ import { Context } from '@deepseek-ai/cordis'
 import { cleanup, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
-import { zh } from '../src/client/locales.ts'
+import { en, zh } from '../src/client/locales.ts'
 import { SlotRegistry } from '@deepseek-ai/dsh-client-ui-renderer/client'
 import { ThemeRuntime } from '@deepseek-ai/dsh-client-ui-theme/client'
 import { stubSettingsScope } from '@deepseek-ai/dsh-client-test-runtime'
@@ -30,6 +30,9 @@ async function bench() {
 }
 
 describe('OneSeven brand', () => {
+  it('uses Agents lite in both interface languages', () => {
+    for (const dictionary of [zh, en]) expect(dictionary).toEqual({ name: 'Agents lite', label: 'Agents lite' })
+  })
   it('supplies both palette values for every override and never writes the preference', async () => {
     const { ctx, theme, host } = await bench()
     await ctx.plugin({ inject: [...inject], apply }).await()
@@ -73,13 +76,13 @@ describe('OneSeven brand', () => {
 
   it('renders the supplied logo without distortion at each requested size', () => {
     const view = render(<OneSevenMark size={24} t={translate} />)
-    const image = view.getByRole('img', { name: 'OneSeven' })
+    const image = view.getByRole('img', { name: 'Agents lite' })
     expect(image.getAttribute('width')).toBe('24')
     expect(image.getAttribute('height')).toBe('24')
     view.rerender(<OneSevenMark size={34} t={translate} />)
     expect(image.getAttribute('width')).toBe('34')
     view.unmount()
-    expect(render(<OneSevenName t={translate} />).getByText('OneSeven')).toBeTruthy()
+    expect(render(<OneSevenName t={translate} />).getByText('Agents lite')).toBeTruthy()
   })
 })
 

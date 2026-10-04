@@ -127,7 +127,7 @@ export function repositoryClientBuildEnvironment(
   const dirty = repositoryGitDirty(root)
   return {
     DSH_CLIENT_BUILD_PROFILE: 'oneseven',
-    DSH_CLIENT_TITLE: 'OneSeven / 壹柒',
+    DSH_CLIENT_TITLE: 'Agents lite',
     ...inherited,
     DSH_CLIENT_COMMIT_HASH: repositoryCommitHash(root, environment),
     ...(dirty === true ? { DSH_CLIENT_GIT_DIRTY: 'true' } : {}),

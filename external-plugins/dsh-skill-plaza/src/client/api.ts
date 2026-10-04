@@ -10,6 +10,7 @@
 export interface PlazaSkillEntry {
   readonly name: string
   readonly description: string
+  readonly displayName?: string
   readonly whenToUse?: string
   readonly modelInvocable: boolean
   readonly category?: string

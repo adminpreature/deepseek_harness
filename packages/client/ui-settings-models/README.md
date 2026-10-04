@@ -27,7 +27,9 @@ English | [中文](README.zh.md)
 
 Open the Models page from the Settings navigation to see every configured provider as a row. A whole-section provider whose key is not configured anywhere renders as its open setup card instead, but only in the first-run posture and only until the user closes that card. Each card kind owns its own open state, so closing one never discards a draft in another.
 
-OneSeven client builds omit the internal-testing notice without recording an acknowledgement. The official build retains it. The model credential step, Models settings, and permission dialogs are unchanged.
+The saved provider endpoint is masked in the model editor, while editing and saving other fields leave its value unchanged. This is visual masking only: it does not restrict settings API access for users sharing one login.
+
+OneSeven client builds omit the internal-testing notice without recording an acknowledgement. The official build retains it. The model credential step and permission dialogs are unchanged.
 
 A provider with a stored catalog error remains visible with its diagnostic and edit/delete actions. Add actions are offered only for registered settings namespaces, so an unavailable namespace cannot leave a button that opens no editor. A rejected save leaves the editor open and displays the Host diagnostic.
 

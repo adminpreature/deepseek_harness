@@ -411,13 +411,14 @@ export function ProviderEditor(props: ProviderEditorProps): ReactNode {
               <span className={styles['fieldLabel']}>{t('baseUrl')}</span>
               <input
                 className={styles['input']}
-                type="text"
+                type="password"
                 value={stringAt(draft, 'baseURL') ?? ''}
                 placeholder={family === 'deepseek'
                   ? t(stringAt(fallback, 'protocol') === 'messages' ? 'deepSeekMessagesBaseUrl' : 'deepSeekChatBaseUrl')
-                  : stringAt(fallback, 'baseURL') ?? t('baseUrlDefault')}
+                  : t('baseUrlDefault')}
                 aria-describedby={family === 'deepseek' ? `${props.provider}-endpoint-hint` : undefined}
                 aria-label={t('baseUrl')}
+                autoComplete="off"
                 disabled={disabled}
                 onChange={(event) => {
                   setField('baseURL', event.target.value === '' ? undefined : event.target.value)

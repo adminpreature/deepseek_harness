@@ -482,6 +482,11 @@ export class PluginManagerController {
           packages: sortPackages(bundles.value.map(bundle => packageView(bundle, plugins.value))),
         })
       } while (this.shouldRerun())
+    } catch {
+      // A first read can fail while the host connection is reconnecting.
+      // Leave loading instead of the page in a permanent loading state; a
+      // later connection event or manual refresh can retry the read.
+      if (!this.disposed) this.patch({ status: 'error' })
     } finally {
       this.inFlight = undefined
     }
