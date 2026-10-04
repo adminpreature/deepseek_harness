@@ -1,0 +1,86 @@
+# Docker Compose for DeepSeek Harness Enterprise Development
+#
+# This file provides PostgreSQL + Redis + pgAdmin for local development.
+#
+# Usage:
+#   docker-compose -f docker-compose.enterprise.yml up -d
+#   docker-compose -f docker-compose.enterprise.yml down
+#
+# Data is persisted in Docker volumes: postgres_data, redis_data
+
+version: '3.8'
+
+services:
+  # PostgreSQL 16 - Primary database
+  postgres:
+    image: postgres:16-alpine
+    container_name: dsh-enterprise-postgres
+    environment:
+      POSTGRES_DB: dsh_enterprise
+      POSTGRES_USER: dsh_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dsh_dev_password_change_me}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=en_US.UTF-8 --lc-ctype=en_US.UTF-8"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./packages/enterprise/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dsh_admin -d dsh_enterprise"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - dsh-enterprise
+
+  # Redis 7 - Cache and session store
+  redis:
+    image: redis:7-alpine
+    container_name: dsh-enterprise-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-dsh_redis_dev_password}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - dsh-enterprise
+
+  # pgAdmin 4 - Database management UI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: dsh-enterprise-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@localhost}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - dsh-enterprise
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  dsh-enterprise:
+    driver: bridge
